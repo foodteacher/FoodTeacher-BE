@@ -1,0 +1,4 @@
+# Python 가상 환경
+myvenv/
+# 캐시파일
+__pycache__/

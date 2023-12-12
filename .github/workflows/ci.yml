@@ -44,6 +44,7 @@ jobs:
         git checkout -b alarm
 
         git add be-deployment.yaml
+        git status
         git commit -m "alarm"
         git push origin alarm
 

@@ -35,14 +35,13 @@ jobs:
         cache-from: type=registry,ref=${{ secrets.NCP_CONTAINER_REGISTRY }}/fastapi-be:latest 
         cache-to: type=inline
         
-    - name: Login to Github
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.GIT_USERNAME }}
-        password: ${{ secrets.GIT_PASSWORD }}
-        
-    - name: alarm github
-      uses : bcanseco/github-contribution-graph-action@2.0.2
-          
+    - name: alarm argo
+      run: |
+        git init 
+        git commit -m "alarm"
+        git add be-deployment.yaml
+        git remote set-url origin ${{ secrets.GIT_URL }}
+        git push origin main
+
 
     

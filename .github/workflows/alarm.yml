@@ -16,11 +16,11 @@ jobs:
           
       - name: alarm argo
         run: |
-          git init 
+          git checkout -b alarm
           git config --global user.name "${{ secrets.GIT_USERNAME }}"
           git config --global user.email "${{ secrets.GIT_EMAIL }}"
           git remote set-url origin ${{ secrets.GIT_URL }}
-          git checkout -b alarm
+         
   
           git add be-deployment.yaml
           git status

@@ -40,8 +40,8 @@ jobs:
         git init 
         git config --global user.name "${{ secrets.GIT_USERNAME }}"
         git config --global user.email "${{ secrets.GIT_EMAIL }}"
-        git commit -m "alarm"
         git add be-deployment.yaml
+        git commit -m "alarm"
         git remote set-url origin ${{ secrets.GIT_URL }}
         git push origin main
 

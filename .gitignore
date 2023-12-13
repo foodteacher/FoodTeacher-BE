@@ -2,3 +2,5 @@
 myvenv/
 # 캐시파일
 __pycache__/
+# env 파일
+.env

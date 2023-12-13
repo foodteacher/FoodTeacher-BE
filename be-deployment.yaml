@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: be
+  name: be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: be
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: be
+    spec:
+      imagePullSecrets:
+      - name: be-regcred
+      containers:
+      - image: k8s-registry-test.kr.ncr.ntruss.com/fastapi-be:latest
+        name: be
+        ports: # 컨테이너가 개방할 포트 정의. 정의 안하면 자동 할당
+        - containerPort: 8000
+        env: # 컨테이너 환경 변수
+        - name: UVICORN_CMD
+          value: "uvicorn app.main:app --host 0.0.0.0 --port 8000"

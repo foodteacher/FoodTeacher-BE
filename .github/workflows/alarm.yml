@@ -1,0 +1,28 @@
+name: Alarm
+
+on:
+  workflow_run:
+    workflows: ["ci"]
+    branches: [main]
+    types: 
+      - completed
+
+jobs:
+  alarm:
+    runs-on: ubuntu-latest
+    steps:          
+      - name: Check out
+        uses: actions/checkout@v2
+          
+      - name: alarm argo
+        run: |
+          git checkout -b alarm
+          git config --global user.name "${{ secrets.GIT_USERNAME }}"
+          git config --global user.email "${{ secrets.GIT_EMAIL }}"
+          git remote set-url origin ${{ secrets.GIT_URL }}
+         
+  
+          git add be-deployment.yaml
+          git status
+          git commit -m "alarm"
+          git push origin alarm

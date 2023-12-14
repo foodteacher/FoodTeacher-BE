@@ -24,7 +24,7 @@ app = get_application()
 
 # CORS 설정
 origins = [
-    "*"  # 원하는 도메인 및 포트를 추가
+    "http://localhost:3000",  # 원하는 도메인 및 포트를 추가
 ]
 
 app.add_middleware(

@@ -1,6 +1,8 @@
 from ..session import SessionLocal
 from ..models.user import User
 
+
+
 def create_user(db: Session, user_data: dict):
     # SQLAlchemy 세션 생성
     db = SessionLocal()

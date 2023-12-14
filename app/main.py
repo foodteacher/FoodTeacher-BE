@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 
 from app.db.session import db_engine
 from app.db.base import Base
@@ -45,6 +45,19 @@ def create_user(user_data: utils.UserBaseModel, db: Session = Depends(get_db)):
 
 @app.get("/users")
 def read_users(db: Session = Depends(get_db)):
-    users = base.user_read(db)
+    users = base.users_read(db)
     return users
 
+@app.get("/users/{user_id}")
+def read_user(user_id: int, db: Session = Depends(get_db)):
+    user = base.user_read(db, user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@app.get("/users/{user_id}/bmr")
+def read_user_bmr(user_id: int, db: Session = Depends(get_db)):
+    user = base.user_read(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"bmr": calculate_bmr(user)}

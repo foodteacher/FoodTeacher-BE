@@ -25,5 +25,8 @@ def user_create(db: Session, user_data: UserBaseModel):
 
     return new_user
 
-def user_read(db: Session):
+def users_read(db: Session):
     return db.query(User).all()
+
+def user_read(db: Session, user_id: int):
+    return db.query(User).filter(User.userId == user_id).first()

@@ -30,3 +30,7 @@ def users_read(db: Session):
 
 def user_read(db: Session, user_id: int):
     return db.query(User).filter(User.userId == user_id).first()
+
+def delete_all_users(db: Session):
+    db.query(User).delete()
+    db.commit()

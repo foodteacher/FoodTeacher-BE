@@ -1,4 +1,3 @@
-from db.base import user_read
 from ..db.models.user import User
 
 # 기초대사량 계산

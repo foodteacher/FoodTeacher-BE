@@ -41,6 +41,21 @@ app.add_middleware(
 def read_root():
     return "hello, 팩트폭행단~!"
 
+@app.get("/temp")
+def temp_endpoint():
+    db = SessionLocal()
+    user_data = utils.UserBaseModel(
+        name="서경원",
+        height=173,
+        weight=72,
+        age=29,
+        gender="male",
+        targetWeight=65.0   
+    )
+    result = base.user_create(db, user_data)
+    db.close()
+    return result
+
 @app.post("/users/")
 def create_user(user_data: utils.UserBaseModel, db: Session = Depends(get_db)):
     return base.user_create(db=db, user_data=user_data)
@@ -56,6 +71,11 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+
+@app.delete("/users")
+def delete_users(db: Session = Depends(get_db)):
+    base.delete_all_users(db)
+    return {"message": "All users deleted"}
 
 @app.get("/users/{user_id}/bmr")
 def read_user_bmr(user_id: int, db: Session = Depends(get_db)):

@@ -1,5 +1,5 @@
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 
 from app.db.session import db_engine
 from app.db.base import Base
@@ -7,10 +7,10 @@ from app.db.base import Base
 from fastapi.middleware.cors import CORSMiddleware
 
 from sqlalchemy.orm import Session  # 데이터베이스 세션을 사용하기 위해 추가
-from app.db.session import SessionLocal  # SessionLocal을 가져옴
+from app.db.session import get_db, SessionLocal  # SessionLocal을 가져옴
 
-from app.utils import UserCreate, UserResponse
-from app.db.models.user import User
+from . import utils
+from .db import base
 
 def create_tables():
     Base.metadata.create_all(bind=db_engine)
@@ -37,34 +37,14 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return "hello, 팩트폭행단~!"
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.post("/users/")
+def create_user(user_data: utils.UserBaseModel, db: Session = Depends(get_db)):
+    return base.user_create(db=db, user_data=user_data)
 
+@app.get("/users")
+def read_users(db: Session = Depends(get_db)):
+    users = base.user_read(db)
+    return users
 
-# FastAPI 앱이 시작될 때 데이터베이스 연결
-@app.on_event("startup")
-async def startup_db_client():
-    print("서버 연결됨!!")
-
-# FastAPI 앱이 종료될 때 데이터베이스 연결 해제
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    print("서버 연결 해제!!")
-
-# @app.post("/users/", response_model=UserResponse)
-# def register_user(user_input: UserCreate):
-#     # 네이버 클로바 API를 사용하여 기초 대사량 얻기
-#     basal_metabolic_rate = get_basal_metabolic_rate(
-#         user_input.height, user_input.weight, user_input.age, user_input.gender
-#     )
-
-#     # 사용자 정보와 기초 대사량을 데이터베이스에 저장
-#     db = SessionLocal()
-#     user_data = user_input.dict()
-#     user_data["basalMetabolicRate"] = basal_metabolic_rate
-#     user = create_user(db, user_data)
-
-#     return user

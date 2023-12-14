@@ -12,6 +12,8 @@ from app.db.session import get_db, SessionLocal  # SessionLocal을 가져옴
 from . import utils
 from .db import base
 
+from .service.bmr_calculator import calculate_bmr
+
 def create_tables():
     Base.metadata.create_all(bind=db_engine)
 

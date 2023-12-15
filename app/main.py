@@ -1,5 +1,6 @@
 from typing import Optional
 import requests
+import json
 from fastapi import FastAPI, Depends, HTTPException, Response
 from fastapi.responses import RedirectResponse, HTMLResponse
 
@@ -113,8 +114,9 @@ def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: Session
     bmr = calculate_bmr(user)
 
     result = get_diet_exercise_advice(executor, bmr, user_input.query)
-    print(result)
-    if "error" in result:
+    data = json.loads(result)
+
+    if "error" in data:
         print("error")
         raise HTTPException(status_code=404, detail="error has been occured")
-    return result
+    return data

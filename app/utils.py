@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 class UserBaseModel(BaseModel):
     name: str
+    kakao_token: str
     height: float
     weight: float
     age: int
@@ -10,3 +11,6 @@ class UserBaseModel(BaseModel):
 
 class UserInput(BaseModel):
     query: str
+
+class KakaoCode(BaseModel):
+    code: str

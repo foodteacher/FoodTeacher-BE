@@ -43,11 +43,17 @@ app.add_middleware(
 def read_root():
     return "hello, 팩트폭행단~!"
 
+@app.get("/del")
+def del_db_table(db: Session = Depends(get_db)):
+    base.delete_all_users(db)
+    return "good"
+
 @app.get("/temp")
 def temp_endpoint():
     db = SessionLocal()
     user_data = utils.UserBaseModel(
         name="서경원",
+        kakao_token="fdkajklajfdskl223123kfjsklfj3",
         height=173,
         weight=72,
         age=29,
@@ -57,6 +63,11 @@ def temp_endpoint():
     result = base.user_create(db, user_data)
     db.close()
     return result
+
+@app.post("/users/kakao_code")
+def get_kakao_code(code: utils.KakaoCode):
+    print(code)
+    return {"message": "success"}
 
 @app.post("/users/")
 def create_user(user_data: utils.UserBaseModel, db: Session = Depends(get_db)):

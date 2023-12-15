@@ -1,5 +1,6 @@
-from typing import Union
-from fastapi import FastAPI, Depends, HTTPException
+from typing import Optional
+import requests
+from fastapi import FastAPI, Depends, HTTPException, Response
 from fastapi.responses import RedirectResponse, HTMLResponse
 
 from app.db.session import db_engine
@@ -66,18 +67,16 @@ def temp_endpoint():
     return result
 
 ############################################# kakao api ####################################
-# KakaO Login
-@app.get('/kakao')
-def kakao():
-    REST_API_KEY = ""
-    REDIRECT_URI = "http://127.0.0.1:8000/auth"
-    url = f"https://kauth.kakao.com/oauth/authorize?client_id={REST_API_KEY}&response_type=code&redirect_uri={REDIRECT_URI}"
-    response = RedirectResponse(url)
-    return response
-@app.post("/users/kakao_code")
-def get_kakao_code(code: utils.KakaoCode):
-    print(code)
-    return {"message": "success"}
+@app.get('/auth')
+async def kakaoAuth(code: Optional[str]="NONE"):
+    REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
+    REDIRECT_URI = 'http://127.0.0.1:8000/auth'
+    _url = f'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={REST_API_KEY}&code={code}&redirect_uri={REDIRECT_URI}'
+    _res = requests.post(_url)
+    _result = _res.json()
+    return {"code":_result}
+
+
 
 @app.post("/users/")
 def create_user(user_data: utils.UserBaseModel, db: Session = Depends(get_db)):
@@ -115,7 +114,7 @@ def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: Session
 
     result = get_diet_exercise_advice(executor, bmr, user_input.query)
     print(result)
-    if result["error"]:
+    if "error" in result:
         print("error")
         raise HTTPException(status_code=404, detail="error has been occured")
     return result

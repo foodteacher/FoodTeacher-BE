@@ -68,8 +68,11 @@ def temp_endpoint():
     return result
 
 ############################################# kakao api ####################################
+# 엑세스 토큰을 저장할 변수
+access_token = None
 @app.post('/auth')
 async def kakaoAuth(code: utils.KakaoCode):
+    global access_token
     REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
     # REDIRECT_URI = 'http://fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com/signup'
     REDIRECT_URI = "http://localhost:3000/signup"
@@ -85,10 +88,10 @@ async def kakaoAuth(code: utils.KakaoCode):
     }
     _res = requests.post(_url, headers=headers, data=data) 
     _result = _res.json()
-    print(_result)
+    access_token = _result.get("access_token")
     return {"code":_result}
 
-############################################# 유저 crud api ####################################
+############################################# 유저 관련 api ####################################
 @app.post("/users/")
 def create_user(user_data: utils.UserBaseModel, db: Session = Depends(get_db)):
     return base.user_create(db=db, user_data=user_data)
@@ -127,6 +130,5 @@ def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: Session
     data = json.loads(result)
 
     if "error" in data:
-        print("error")
         raise HTTPException(status_code=404, detail="error has been occured")
     return data

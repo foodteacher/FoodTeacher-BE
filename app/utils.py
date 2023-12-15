@@ -8,12 +8,5 @@ class UserBaseModel(BaseModel):
     gender: str
     targetWeight: float
 
-# class UserResponse(BaseModel):
-#     userId: int
-#     name: str
-#     height: float
-#     weight: float
-#     age: int
-#     gender: str
-#     targetWeight: float
-#     basalMetabolicRate: float
+class UserInput(BaseModel):
+    query: str

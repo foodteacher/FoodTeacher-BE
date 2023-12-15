@@ -12,7 +12,9 @@ from app.db.session import get_db, SessionLocal  # SessionLocal을 가져옴
 from . import utils
 from .db import base
 
+from .service.clova_ai import get_executor
 from .service.bmr_calculator import calculate_bmr
+from .service.food_teacher import get_diet_exercise_advice
 
 def create_tables():
     Base.metadata.create_all(bind=db_engine)
@@ -83,3 +85,16 @@ def read_user_bmr(user_id: int, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return {"bmr": calculate_bmr(user)}
+
+@app.get("/users/{user_id}/diet-exercise-advice")
+def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: Session = Depends(get_db)):
+    executor = get_executor()
+    user = base.user_read(db, user_id)
+    bmr = calculate_bmr(user)
+
+    result = get_diet_exercise_advice(executor, bmr, user_input.query)
+    print(result)
+    if result["error"]:
+        print("error")
+        raise HTTPException(status_code=404, detail="error has been occured")
+    return result

@@ -51,3 +51,12 @@ class CompletionExecutor:
             return res['result']['message']['content']
         else:
             return 'Error'
+
+def get_executor():
+    completion_executor = CompletionExecutor(
+            host='https://clovastudio.stream.ntruss.com',
+            api_key='NTA0MjU2MWZlZTcxNDJiYzQNPMHi/Vt8f/jUw+uD7CxxbMRCZVRUTctyUOXF4j66TwYR+0rbAlCPe0Gidp9I8H5FHyh/CZdR2nR3P9YLzdyPcQWUoaoBJNdfVdlLRfbApqW6nidfOULcNq8DgkXCDt2ZM3vduRz5ANdNiQE6dExfAsazK9E+7N3ujKbXes6CjsU82BBl6Xgzi+p7xEfKmZauaTerL9hyD591yntGgCg=',
+            api_key_primary_val='3NxiPMlcuPlUytdAbAeMLg10eZwrwgQ4FNxYRTeh',
+            request_id='1ba64a1d5d5a410b902cf0af1e2a8684'
+        )
+    return completion_executor

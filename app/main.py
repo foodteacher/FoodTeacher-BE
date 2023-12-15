@@ -1,5 +1,6 @@
 from typing import Union
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.responses import RedirectResponse, HTMLResponse
 
 from app.db.session import db_engine
 from app.db.base import Base
@@ -43,7 +44,7 @@ app.add_middleware(
 def read_root():
     return "hello, 팩트폭행단~!"
 
-@app.get("/del")
+############################################# 임시 api ####################################
 def del_db_table(db: Session = Depends(get_db)):
     base.delete_all_users(db)
     return "good"
@@ -64,6 +65,15 @@ def temp_endpoint():
     db.close()
     return result
 
+############################################# kakao api ####################################
+# KakaO Login
+@app.get('/kakao')
+def kakao():
+    REST_API_KEY = ""
+    REDIRECT_URI = "http://127.0.0.1:8000/auth"
+    url = f"https://kauth.kakao.com/oauth/authorize?client_id={REST_API_KEY}&response_type=code&redirect_uri={REDIRECT_URI}"
+    response = RedirectResponse(url)
+    return response
 @app.post("/users/kakao_code")
 def get_kakao_code(code: utils.KakaoCode):
     print(code)
@@ -97,7 +107,7 @@ def read_user_bmr(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return {"bmr": calculate_bmr(user)}
 
-@app.get("/users/{user_id}/diet-exercise-advice")
+@app.post("/users/{user_id}/diet-exercise-advice")
 def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: Session = Depends(get_db)):
     executor = get_executor()
     user = base.user_read(db, user_id)

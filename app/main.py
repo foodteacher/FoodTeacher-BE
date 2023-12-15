@@ -68,22 +68,26 @@ def temp_endpoint():
     return result
 
 ############################################# kakao api ####################################
-@app.get('/auth')
-async def kakaoAuth(code: Optional[str]="NONE"):
-    if code == "NONE":
-        return {"error":"인가 코드가 없습니다."}
+@app.post('/auth')
+async def kakaoAuth(code: utils.KakaoCode):
     REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
     REDIRECT_URI = 'http://fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com/signup'
-    _url = f'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={REST_API_KEY}&code={code}&redirect_uri={REDIRECT_URI}'
-    _res = requests.post(_url)  
+    _url = f'https://kauth.kakao.com/oauth/token'
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    data = {
+        "grant_type": "authorization_code",
+        "client_id": REST_API_KEY,
+        "code": code.code,
+        "redirect_uri": REDIRECT_URI
+    }
+    _res = requests.post(_url, headers=headers, data=data) 
     _result = _res.json()
     print(_result)
     return {"code":_result}
 
-
-
-
-
+############################################# 유저 crud api ####################################
 @app.post("/users/")
 def create_user(user_data: utils.UserBaseModel, db: Session = Depends(get_db)):
     return base.user_create(db=db, user_data=user_data)

@@ -21,9 +21,9 @@ from .service.clova_ai import get_executor
 from .service.bmr_calculator import calculate_bmr
 from .service.food_teacher import get_diet_exercise_advice
 #security
-from app.security.jwt import get_current_user, get_jwt
-from fastapi.security import OAuth2PasswordRequestForm
-from .security.jwt import oauth2_scheme
+# from app.security.jwt import get_current_user, get_jwt
+# from fastapi.security import OAuth2PasswordRequestForm
+# from .security.jwt import oauth2_scheme
 
 # app 생성
 def create_tables():
@@ -55,28 +55,26 @@ def read_root():
     return "hello, 팩트폭행단~!"
 
 ############################################# 임시 api ####################################
-@app.get("/del")
-def del_db_table(db: Session = Depends(get_db)):
-    base.delete_all_users(db)
-    return "good"
+# @app.get("/del")
+# def del_db_table(db: Session = Depends(get_db)):
+#     base.delete_all_users(db)
+#     return "good"
 
-@app.get("/temp")
-def temp_endpoint():
-    db = SessionLocal()
-    user_data = utils.UserBaseModel(
-        name="서경원",
-        kakao_token="fdkajklajfdskl223123kfjsklfj3",
-        kakao_id="fjksdalf",
-        height=173,
-        weight=72,
-        age=29,
-        gender="male",
-        targetWeight=65.0    
-    )
-    result = base.user_create(db, user_data)
-    db.commit()
-    db.close()
-    return result
+# @app.get("/temp")
+# def temp_endpoint():
+#     db = SessionLocal()
+#     user_data = utils.UserCreateModel(
+#         name="서경원",
+#         height=173,
+#         weight=72,
+#         age=29,
+#         gender="male",
+#         targetWeight=65.0    
+#     )
+#     result = base.user_create(db, user_data)
+#     db.commit()
+#     db.close()
+#     return result
 
 ############################################# kakao api ####################################
 # 엑세스 토큰을 저장할 변수
@@ -103,10 +101,13 @@ async def kakaoAuth(code: utils.KakaoCode, db: Session = Depends(get_db)):
 
     _url = "https://kapi.kakao.com/v2/user/me"
     kakao_user_id = get_kakao_user_id(_url, access_token)
-    base.user_save_kakao_id(db, kakao_user_id, access_token)
-    jwt = get_jwt(kakao_user_id)
+    user = base.get_user_by_kakao_id(db, kakao_id=kakao_user_id)
+    if user:
+        return {"user_id": user.userId}
+    user = base.user_save_kakao_id(db, kakao_user_id, access_token)
+    # jwt = get_jwt(kakao_user_id)
 
-    return {"jwt": jwt, "token_type": "bearer"}
+    return {"new_user_id": user.userId}
 
 def get_kakao_user_id(_url, access_token):
     headers = {
@@ -121,23 +122,16 @@ def get_kakao_user_id(_url, access_token):
     else:
         raise HTTPException(status_code=401, detail="Kakao authentication failed")
 
-############################################# 유저 관련 api ####################################
+############################################# 유저 관련 api ####################################    
 @app.post("/users")
-async def create_user(user_data: utils.UserCreateModel, JWT: str = Depends(oauth2_scheme),  db: Session = Depends(get_db)):
-    user, new_JWT = await get_current_user(JWT)
-    await base.user_create(db=db, user=user, user_data=user_data)
-
-    # User 모델을 딕셔너리로 직렬화
-    user_dict = user.__dict__
-    # SQLAlchemy 내부에서 사용하는 특수 속성 제거
-    user_dict.pop("_sa_instance_state", None)
-    
-    # CreateUserResponse 모델을 사용하여 user와 JWT 값을 반환
-    return utils.CreateUserResponse(user=user_dict, JWT=new_JWT)
+async def create_user(user_data: utils.UserCreateModel, db: Session = Depends(get_db)):
+    user = base.get_user_by_user_id(db, user_data.user_id)
+    user = await base.user_create(db=db, user=user, user_data=user_data)
+    return user
 
 @app.get("/users")
-async def read_user(JWT: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    user = await get_current_user(JWT)
+async def read_user(user_request: utils.UserRequest, db: Session = Depends(get_db)):
+    user = await base.get_user_by_user_id(db, user_request.user_id)
     return user
 
 @app.get("/users/{user_id}")

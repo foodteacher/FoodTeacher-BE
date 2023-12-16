@@ -29,10 +29,11 @@ def user_save_kakao_id(db: Session, new_kakao_id: str, kakao_token: str):
 
     return user
 
-def get_user_by_user_id(db: Session, user_id: str):
-    user = db.query(User).filter(User.user_id == user_id).first()
-    return user
+async def get_user_by_user_id(db: Session, user_id: int):
+    return db.query(User).filter(User.userId == user_id).first()
 
+async def get_user_by_kakao_id(db: Session, kakao_id: int):
+    return db.query(User).filter(User.kakao_id == kakao_id).first()
 
 async def user_create(user: User, user_data: utils.UserCreateModel, db: Session):
     user.name = user_data.name

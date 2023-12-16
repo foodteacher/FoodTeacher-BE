@@ -5,6 +5,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from ..db import base
+from passlib.context import CryptContext
+from typing import Annotated
 
 from ..core.config import get_setting
 
@@ -23,7 +25,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=30)
+        expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
@@ -37,7 +39,7 @@ def get_jwt(user_id):
     return access_token
 
 # JWT 토큰 검증 함수
-def verify_token(token: str):
+def verify_token(token: str = Depends(oauth2_scheme)):
     global SECRET_KEY, ALGORITHM
     try:
         print("#######")
@@ -57,7 +59,7 @@ def verify_token(token: str):
     return token_data, exp_time
 
 # JWT 토큰을 사용하여 사용자 확인 함수
-async def get_current_user(token: str):
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     global ACCESS_TOKEN_EXPIRE_MINUTES
     # 토큰 디코딩 및 사용자 확인 로직 작성
     token_data, exp_time = verify_token(token)
@@ -87,5 +89,8 @@ async def get_current_user(token: str):
         )
     return user, token
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 class TokenData(BaseModel):
     user_id: str

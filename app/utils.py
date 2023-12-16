@@ -16,6 +16,10 @@ class UserInput(BaseModel):
 class KakaoCode(BaseModel):
     code: str
 
-class JWTToken(BaseModel):
-    access_token: str
-    token_type: str
+class UserCreateModel(BaseModel):
+    name: str
+    height: str
+    weight: str
+    age: str
+    gender: str
+    targetweight: float

@@ -23,6 +23,7 @@ from .service.food_teacher import get_diet_exercise_advice
 #security
 from app.security.jwt import get_current_user, get_jwt
 from fastapi.security import OAuth2PasswordRequestForm
+from .security.jwt import oauth2_scheme
 
 # app 생성
 def create_tables():
@@ -102,6 +103,7 @@ async def kakaoAuth(code: utils.KakaoCode, db: Session = Depends(get_db)):
 
     _url = "https://kapi.kakao.com/v2/user/me"
     kakao_user_id = get_kakao_user_id(_url, access_token)
+    base.user_save_kakao_id(db, kakao_user_id, access_token)
     jwt = get_jwt(kakao_user_id)
 
     return {"jwt": jwt, "token_type": "bearer"}
@@ -120,9 +122,11 @@ def get_kakao_user_id(_url, access_token):
         raise HTTPException(status_code=401, detail="Kakao authentication failed")
 
 ############################################# 유저 관련 api ####################################
-@app.post("/users/")
-def create_user(user_data: utils.UserBaseModel, db: Session = Depends(get_db)):
-    return base.user_create(db=db, user_data=user_data)
+@app.post("/users")
+def create_user(user_data: utils.UserCreateModel, JWT: str = Depends(oauth2_scheme),  db: Session = Depends(get_db)):
+    user = get_current_user(JWT)
+    base.user_create(db=db, user=user, user_data=user_data)
+    return user
 
 @app.get("/users")
 def read_users(db: Session = Depends(get_db)):

@@ -6,7 +6,7 @@ from .models.userDietPlan import UserDietPlan
 
 from sqlalchemy.orm import Session
 
-from ..utils import UserBaseModel
+from .. import utils
 
 def user_save_access_token(db: Session, access_token: str):
     user = User(kakao_token=access_token)
@@ -17,25 +17,35 @@ def user_save_access_token(db: Session, access_token: str):
 
     return user
 
+def user_save_kakao_id(db: Session, new_kakao_id: str, kakao_token: str):
+    user = db.query(User).filter(User.kakao_token == kakao_token).first()
 
-def user_create(db: Session, user_data: UserBaseModel):
-    # User 모델을 사용하여 새로운 사용자 데이터 생성
-    new_user = User(
-    name=user_data.name,
-    kakao_token=user_data.kakao_token,
-    kakao_id=user_data.kakao_id,
-    height=user_data.height,
-    weight=user_data.weight,
-    age=user_data.age,
-    gender=user_data.gender,
-    targetWeight=user_data.targetWeight,
-    )
+    if user:
+        user.kakao_id = new_kakao_id
+        db.commit()
+        db.refresh(user)
+    else:
+        pass
 
-    db.add(new_user)
+    return user
+
+def get_user_by_user_id(db: Session, user_id: str):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    return user
+
+
+def user_create(user: User,user_data: utils.UserCreateModel, db: Session):
+    user.name = user_data.name
+    user.height = user_data.height
+    user.weight = user_data.weight
+    user.age = user_data.age
+    user.gender = user_data.gender
+    user.targetWeight = user_data.targetweight
+    
     db.commit()
-    db.refresh(new_user)
+    db.refresh(user)
 
-    return new_user
+    return user
 
 def users_read(db: Session):
     return db.query(User).all()

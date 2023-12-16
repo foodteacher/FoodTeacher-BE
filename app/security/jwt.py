@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
+from ..db import base
 
 from ..core.config import get_setting
 
@@ -45,14 +46,6 @@ def verify_token(token: str):
         return None
     return token_data
 
-# 사용자 인증 함수 (예: 사용자 이름 및 비밀번호 확인)
-def authenticate_user(username: str, password: str):
-    # 사용자 확인 로직 작성
-    user = User.get_by_username(username)
-    if user is None or not user.verify_password(password):
-        return None
-    return user
-
 # JWT 토큰을 사용하여 사용자 확인 함수
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     # 토큰 디코딩 및 사용자 확인 로직 작성
@@ -63,7 +56,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    user = User.get_by_username(username=token_data.username)
+    user = base.get_user_by_user_id(user_id=token_data.user_id)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

@@ -30,6 +30,9 @@ def user_save_kakao_id(db: Session, new_kakao_id: str, kakao_token: str):
 
     return user
 
+async def get_user_by_user_id(db: Session, user_id: int):
+    return db.query(User).filter(User.userId == user_id).first()
+
 async def get_user_by_user_id_retry(db: Session, user_id: int, max_retries: int = 3, current_retry: int = 0):
     try:
         return db.query(User).filter(User.userId == user_id).first()

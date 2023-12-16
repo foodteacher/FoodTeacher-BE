@@ -68,20 +68,20 @@ async def temp_endpoint(db: Session = Depends(get_db)):
 
     user_data = utils.UserCreateModel(
         name="서경원",
-        height=173.0,
-        weight=72.0,
+        height=432,
+        weight=23,
         age=29,
         gender="남성",
-        targetWeight=65.0
+        targetWeight=444
     )
-    result = await base.user_create(db, user_data)
+    result = await base.user_create(user_data, db)
 
     return result
 
-@app.get("/db_test")
-def db_test():
-    conn_test(db_engine)
-    return "very good!"
+# @app.get("/db_test")
+# def db_test():
+#     conn_test(db_engine)
+#     return "very good!"
 
 ############################################# kakao api ####################################
 # # 엑세스 토큰을 저장할 변수

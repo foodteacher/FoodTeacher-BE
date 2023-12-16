@@ -3,6 +3,7 @@ from .models.dietPlanMenu import DietPlanMenu
 from .models.menu import Menu
 from .models.user import User
 from .models.userDietPlan import UserDietPlan
+from sqlalchemy.exc import OperationalError
 
 from sqlalchemy.orm import Session
 
@@ -29,8 +30,16 @@ def user_save_kakao_id(db: Session, new_kakao_id: str, kakao_token: str):
 
     return user
 
-async def get_user_by_user_id(db: Session, user_id: int):
-    return db.query(User).filter(User.userId == user_id).first()
+async def get_user_by_user_id_retry(db: Session, user_id: int, max_retries: int = 3, current_retry: int = 0):
+    try:
+        return db.query(User).filter(User.userId == user_id).first()
+    except OperationalError as e:
+        if current_retry < max_retries:
+            # 재시도 횟수가 최대 횟수 미만일 때 재귀적으로 호출
+            return await get_user_by_user_id_retry(db, user_id, max_retries, current_retry + 1)
+        else:
+            # 최대 재시도 횟수를 초과하면 예외를 다시 발생시킴
+            raise e
 
 async def get_user_by_kakao_id(db: Session, kakao_id: int):
     return db.query(User).filter(User.kakao_id == kakao_id).first()

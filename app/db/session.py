@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from ..core.config import get_setting
 from sqlalchemy.exc import OperationalError
+from sqlalchemy import text
 
 settings = get_setting()
 
@@ -18,11 +19,12 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
 
 def conn_test(engine):
     # 연결 테스트를 위한 쿼리 실행
+    ql = text("SELECT 1")
     try:
         # Connection 객체 생성
         with engine.connect() as connection:
             # 간단한 쿼리 실행
-            result = connection.execute("SELECT 1")
+            result = connection.execute(ql)
             # 결과 출력 (일반적으로 1)
             for row in result:
                 print("Connection Test Result:", row[0])

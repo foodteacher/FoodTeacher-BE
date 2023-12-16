@@ -78,10 +78,10 @@ async def temp_endpoint(db: Session = Depends(get_db)):
 
     return result
 
-# @app.get("/db_test")
-# def db_test():
-#     conn_test(db_engine)
-#     return "very good!"
+@app.get("/db_test")
+def db_test():
+    conn_test(db_engine)
+    return "very good!"
 
 ############################################# kakao api ####################################
 # # 엑세스 토큰을 저장할 변수
@@ -166,7 +166,7 @@ async def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: S
 
     if "error" in data:
         raise HTTPException(status_code=404, detail="error has been occured")
-    return 
+    return data
 
 @app.post("/users/diet-exercise-advice")
 async def get_answer_from_clova(user_input: utils.TempUserInput, db: Session = Depends(get_db)):

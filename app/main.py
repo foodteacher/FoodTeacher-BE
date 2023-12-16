@@ -39,7 +39,8 @@ app = get_application()
 # CORS 설정
 from fastapi.middleware.cors import CORSMiddleware
 origins = [
-    "http://localhost:3000",  # 원하는 도메인 및 포트를 추가
+    "http://localhost:3000",
+    "fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com",
 ]
 
 app.add_middleware(

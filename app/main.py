@@ -40,7 +40,9 @@ app = get_application()
 from fastapi.middleware.cors import CORSMiddleware
 origins = [
     "http://localhost:3000",
-    "fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com",
+    "http://fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com",
+    "http://be-be-c957f-21216619-aeb7ba37580c.kr.lb.naverncp.com",
+    "http://www.foodteacher.xyz"
 ]
 
 app.add_middleware(
@@ -155,6 +157,7 @@ async def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: S
     bmr = calculate_bmr(user)
 
     result = get_diet_exercise_advice(executor, bmr, user_input.query)
+    print(result)
     data = json.loads(result)
 
     if "error" in data:

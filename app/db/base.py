@@ -8,11 +8,22 @@ from sqlalchemy.orm import Session
 
 from ..utils import UserBaseModel
 
+def user_save_access_token(db: Session, access_token: str):
+    user = User(kakao_token=access_token)
+
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return user
+
+
 def user_create(db: Session, user_data: UserBaseModel):
     # User 모델을 사용하여 새로운 사용자 데이터 생성
     new_user = User(
     name=user_data.name,
     kakao_token=user_data.kakao_token,
+    kakao_id=user_data.kakao_id,
     height=user_data.height,
     weight=user_data.weight,
     age=user_data.age,

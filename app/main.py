@@ -149,9 +149,9 @@ def read_user_bmr(user_id: int, db: Session = Depends(get_db)):
     return {"bmr": calculate_bmr(user)}
 
 @app.post("/users/{user_id}/diet-exercise-advice")
-def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: Session = Depends(get_db)):
+async def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: Session = Depends(get_db)):
     executor = get_executor()
-    user = base.user_read(db, user_id)
+    user = await base.get_user_by_user_id(db, user_id)
     bmr = calculate_bmr(user)
 
     result = get_diet_exercise_advice(executor, bmr, user_input.query)

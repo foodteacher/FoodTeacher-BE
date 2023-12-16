@@ -129,9 +129,9 @@ def create_user(user_data: utils.UserCreateModel, JWT: str = Depends(oauth2_sche
     return user
 
 @app.get("/users")
-def read_users(db: Session = Depends(get_db)):
-    users = base.users_read(db)
-    return users
+def read_user(JWT: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    user = get_current_user(JWT)
+    return user
 
 @app.get("/users/{user_id}")
 def read_user(user_id: int, db: Session = Depends(get_db)):

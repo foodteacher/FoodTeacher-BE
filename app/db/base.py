@@ -35,24 +35,24 @@ async def get_user_by_user_id(db: Session, user_id: int):
 async def get_user_by_kakao_id(db: Session, kakao_id: int):
     return db.query(User).filter(User.kakao_id == kakao_id).first()
 
-async def user_create(user: User, user_data: utils.UserCreateModel, db: Session):
-    user.name = user_data.name
-    user.height = user_data.height
-    user.weight = user_data.weight
-    user.age = user_data.age
-    user.gender = user_data.gender
-    user.targetWeight = user_data.targetweight
+async def user_create(user_data: utils.UserCreateModel, db: Session):
+    user = User(
+        name = user_data.name,
+        height = user_data.height,
+        weight = user_data.weight,
+        age = user_data.age,
+        gender = user_data.gender,
+        targetWeight = user_data.targetweight
+    )
     
+    db.add(user)
     db.commit()
     db.refresh(user)
 
     return user
 
-def users_read(db: Session):
+def get_users(db: Session):
     return db.query(User).all()
-
-def user_read(db: Session, user_id: int):
-    return db.query(User).filter(User.userId == user_id).first()
 
 def delete_all_users(db: Session):
     db.query(User).delete()

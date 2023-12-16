@@ -9,8 +9,6 @@ class User(Base):
 
     userId = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255))
-    kakao_token = Column(String(255))
-    kakao_id = Column(String(255))
     height = Column(Float)
     weight = Column(Float)
     age = Column(Integer)
@@ -19,3 +17,4 @@ class User(Base):
 
     # UserDietPlan과의 관계 정의
     diet_plans = relationship("UserDietPlan", back_populates="user")
+

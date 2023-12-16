@@ -18,8 +18,8 @@ class KakaoCode(BaseModel):
 
 class UserCreateModel(BaseModel):
     name: str
-    height: str
-    weight: str
-    age: str
+    height: float
+    weight: float
+    age: int
     gender: str
     targetweight: float

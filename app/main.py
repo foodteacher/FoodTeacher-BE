@@ -63,21 +63,20 @@ def del_db_table(db: Session = Depends(get_db)):
     base.delete_all_users(db)
     return "good"
 
-# @app.get("/temp")
-# def temp_endpoint():
-#     db = SessionLocal()
-#     user_data = utils.UserCreateModel(
-#         name="서경원",
-#         height=173,
-#         weight=72,
-#         age=29,
-#         gender="male",
-#         targetWeight=65.0    
-#     )
-#     result = base.user_create(db, user_data)
-#     db.commit()
-#     db.close()
-#     return result
+@app.get("/temp")
+async def temp_endpoint(db: Session = Depends(get_db)):
+
+    user_data = utils.UserCreateModel(
+        name="서경원",
+        height=173.0,
+        weight=72.0,
+        age=29,
+        gender="남성",
+        targetWeight=65.0
+    )
+    result = await base.user_create(db, user_data)
+
+    return result
 
 ############################################# kakao api ####################################
 # # 엑세스 토큰을 저장할 변수
@@ -155,6 +154,19 @@ async def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: S
     executor = get_executor()
     user = await base.get_user_by_user_id(db, user_id)
     bmr = calculate_bmr(user)
+
+    result = get_diet_exercise_advice(executor, bmr, user_input.query)
+    print(result)
+    data = json.loads(result)
+
+    if "error" in data:
+        raise HTTPException(status_code=404, detail="error has been occured")
+    return 
+
+@app.post("/users/diet-exercise-advice")
+async def get_answer_from_clova(user_input: utils.TempUserInput, db: Session = Depends(get_db)):
+    executor = get_executor()
+    bmr = calculate_bmr(user_input)
 
     result = get_diet_exercise_advice(executor, bmr, user_input.query)
     print(result)

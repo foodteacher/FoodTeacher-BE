@@ -17,4 +17,3 @@ class User(Base):
 
     # UserDietPlan과의 관계 정의
     diet_plans = relationship("UserDietPlan", back_populates="user")
-

@@ -23,7 +23,16 @@ class UserCreateModel(BaseModel):
     weight: float
     age: int
     gender: str
-    targetweight: float
+    targetWeight: float
+
+class TempUserInput(BaseModel):
+    name: str
+    height: float
+    weight: float
+    age: int
+    gender: str
+    targetWeight: float
+    query: str
 
 class UserRequest(BaseModel):
     user_id: int

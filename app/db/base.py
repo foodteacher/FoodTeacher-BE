@@ -42,7 +42,7 @@ async def user_create(user_data: utils.UserCreateModel, db: Session):
         weight = user_data.weight,
         age = user_data.age,
         gender = user_data.gender,
-        targetWeight = user_data.targetweight
+        targetWeight = user_data.targetWeight
     )
     
     db.add(user)

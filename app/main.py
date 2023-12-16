@@ -9,7 +9,7 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 # db
-from app.db.session import db_engine
+from app.db.session import db_engine, conn_test
 from app.db.base import Base
 from sqlalchemy.orm import Session  # 데이터베이스 세션을 사용하기 위해 추가
 from app.db.session import get_db, SessionLocal  # SessionLocal을 가져옴
@@ -24,7 +24,6 @@ from .service.food_teacher import get_diet_exercise_advice
 # from app.security.jwt import get_current_user, get_jwt
 # from fastapi.security import OAuth2PasswordRequestForm
 # from .security.jwt import oauth2_scheme
-from .db.session import db_engine, conn_test
 
 # app 생성
 def create_tables():
@@ -80,7 +79,9 @@ async def temp_endpoint(db: Session = Depends(get_db)):
     return result
 
 # @app.get("/db_test")
-# def db_test()
+# def db_test():
+#     conn_test(db_engine)
+#     return "very good!"
 
 ############################################# kakao api ####################################
 # # 엑세스 토큰을 저장할 변수

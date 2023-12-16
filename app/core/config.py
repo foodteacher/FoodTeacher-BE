@@ -10,11 +10,11 @@ class Settings(BaseSettings):
     MYSQL_USER: str
     MYSQL_PASSWORD: str
 
-    # CLOVA 설정 정보
-    CLOVA_HOST: str
-    CLOVA_API_KEY: str
-    CLOVA_API_KEY_PRIMARY_VAL: str
-    CLOVA_REQUEST_ID: str
+    # # CLOVA 설정 정보
+    # CLOVA_HOST: str
+    # CLOVA_API_KEY: str
+    # CLOVA_API_KEY_PRIMARY_VAL: str
+    # CLOVA_REQUEST_ID: str
 
     # JWT 설정 정보
     SECRET_KEY: str

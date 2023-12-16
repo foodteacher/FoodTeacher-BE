@@ -24,6 +24,7 @@ from .service.food_teacher import get_diet_exercise_advice
 # from app.security.jwt import get_current_user, get_jwt
 # from fastapi.security import OAuth2PasswordRequestForm
 # from .security.jwt import oauth2_scheme
+from .db.session import db_engine, conn_test
 
 # app 생성
 def create_tables():
@@ -77,6 +78,9 @@ async def temp_endpoint(db: Session = Depends(get_db)):
     result = await base.user_create(db, user_data)
 
     return result
+
+# @app.get("/db_test")
+# def db_test()
 
 ############################################# kakao api ####################################
 # # 엑세스 토큰을 저장할 변수

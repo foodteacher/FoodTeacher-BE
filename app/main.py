@@ -123,14 +123,21 @@ def get_kakao_user_id(_url, access_token):
 
 ############################################# 유저 관련 api ####################################
 @app.post("/users")
-def create_user(user_data: utils.UserCreateModel, JWT: str = Depends(oauth2_scheme),  db: Session = Depends(get_db)):
-    user = get_current_user(JWT)
-    base.user_create(db=db, user=user, user_data=user_data)
-    return user
+async def create_user(user_data: utils.UserCreateModel, JWT: str = Depends(oauth2_scheme),  db: Session = Depends(get_db)):
+    user, new_JWT = await get_current_user(JWT)
+    await base.user_create(db=db, user=user, user_data=user_data)
+
+    # User 모델을 딕셔너리로 직렬화
+    user_dict = user.__dict__
+    # SQLAlchemy 내부에서 사용하는 특수 속성 제거
+    user_dict.pop("_sa_instance_state", None)
+    
+    # CreateUserResponse 모델을 사용하여 user와 JWT 값을 반환
+    return utils.CreateUserResponse(user=user_dict, JWT=new_JWT)
 
 @app.get("/users")
-def read_user(JWT: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    user = get_current_user(JWT)
+async def read_user(JWT: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    user = await get_current_user(JWT)
     return user
 
 @app.get("/users/{user_id}")

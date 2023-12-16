@@ -23,3 +23,8 @@ class UserCreateModel(BaseModel):
     age: int
     gender: str
     targetweight: float
+
+# 모델을 사용하여 반환할 데이터 정의
+class CreateUserResponse(BaseModel):
+    user: dict  # user 정보
+    JWT: str    # JWT 토큰

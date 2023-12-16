@@ -38,24 +38,38 @@ def get_jwt(user_id):
 def verify_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    
         user_id: str = payload.get("sub")
+        exp_time = payload.get("exp")
+
         if user_id is None:
-            return None
-        token_data = TokenData(user_id=user_id)
+            return None, None
+        
+        token_data = TokenData(user_id=user_id) 
     except JWTError:
-        return None
-    return token_data
+        return None, None
+    return token_data, exp_time
 
 # JWT 토큰을 사용하여 사용자 확인 함수
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     # 토큰 디코딩 및 사용자 확인 로직 작성
-    token_data = verify_token(token)
+    token_data, exp_time = verify_token(token)
     if token_data is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
+    # 토큰의 만료 시간 확인
+    current_time = datetime.utcnow()
+    if current_time > exp_time:
+        # 토큰이 만료되었을 경우, 새로운 토큰 발급
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        new_token_data = {"sub": token_data.user_id}
+        new_access_token = create_access_token(new_token_data, expires_delta=access_token_expires)
+        return get_current_user(new_access_token)
+    
     user = base.get_user_by_user_id(user_id=token_data.user_id)
     if user is None:
         raise HTTPException(
@@ -63,7 +77,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             detail="User not found",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return user
+    return user, token
 
 class TokenData(BaseModel):
     user_id: str

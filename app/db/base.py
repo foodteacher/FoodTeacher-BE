@@ -34,7 +34,7 @@ def get_user_by_user_id(db: Session, user_id: str):
     return user
 
 
-def user_create(user: User,user_data: utils.UserCreateModel, db: Session):
+async def user_create(user: User, user_data: utils.UserCreateModel, db: Session):
     user.name = user_data.name
     user.height = user_data.height
     user.weight = user_data.weight

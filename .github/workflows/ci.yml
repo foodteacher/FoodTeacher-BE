@@ -37,8 +37,8 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.NCP_CONTAINER_REGISTRY }}/fastapi-be:latest 
-        cache-from: type=registry,ref=${{ secrets.NCP_CONTAINER_REGISTRY }}/fastapi-be:latest 
+        tags: ${{ secrets.NCP_CONTAINER_REGISTRY }}/fastapi-be:2
+        cache-from: type=registry,ref=${{ secrets.NCP_CONTAINER_REGISTRY }}/fastapi-be:2 
         cache-to: type=inline
         
  

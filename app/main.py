@@ -129,7 +129,7 @@ async def temp_endpoint(db: Session = Depends(get_db)):
 #     else:
 #         raise HTTPException(status_code=401, detail="Kakao authentication failed")
 
-############################################# 유저 관련 api ####################################    
+############################################# 유저 관련 api ###########################################    
 @app.post("/users")
 async def create_user(user_data: utils.UserCreateModel, db: Session = Depends(get_db)):
     user = await base.user_create(db=db, user_data=user_data)

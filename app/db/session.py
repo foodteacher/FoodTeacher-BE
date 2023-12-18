@@ -14,7 +14,7 @@ SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{}:{}@{}:{}/{}".format(
     settings.MYSQL_DATABASE,
 )
 
-db_engine = create_engine(SQLALCHEMY_DATABASE_URL)
+db_engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
 
 def conn_test(engine):

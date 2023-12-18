@@ -42,13 +42,9 @@ def get_jwt(user_id):
 def verify_token(token: str = Depends(oauth2_scheme)):
     global SECRET_KEY, ALGORITHM
     try:
-        print("#######")
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print("$$$$$$$$$$$$$$$$$")
         user_id: str = payload.get("sub")
-        print("*******************")
         exp_time = payload.get("exp")
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
         if user_id is None:
             return None, None

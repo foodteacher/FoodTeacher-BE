@@ -42,6 +42,7 @@ origins = [
     "http://localhost:3000",
     "http://be-be-c957f-21216619-aeb7ba37580c.kr.lb.naverncp.com",
     "http://ing-fe-redirectingress-b09e0-21395882-5398597ca2af.kr.lb.naverncp.com"
+    "http://www.foodteacher.xyz/"
 ]
 app.add_middleware(
     CORSMiddleware,

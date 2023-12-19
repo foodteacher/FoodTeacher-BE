@@ -39,12 +39,10 @@ app = get_application()
 # CORS 설정
 from fastapi.middleware.cors import CORSMiddleware
 origins = [
-    "http://www.foodteacher.xyz/api",
-    "http://www.foodteacher.xyz",
-    "http://ingress-ngi-ingress-ngin-fab1d-21392693-456f2092ccff.kr.lb.naverncp.com/api",
-    "http://ingress-ngi-ingress-ngin-fab1d-21392693-456f2092ccff.kr.lb.naverncp.com"
+    "http://localhost:3000",
+    "http://be-be-c957f-21216619-aeb7ba37580c.kr.lb.naverncp.com",
+    "http://ing-fe-redirectingress-b09e0-21395882-5398597ca2af.kr.lb.naverncp.com"
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

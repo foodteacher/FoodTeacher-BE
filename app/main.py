@@ -40,9 +40,10 @@ app = get_application()
 from fastapi.middleware.cors import CORSMiddleware
 origins = [
     "http://localhost:3000",
-    "http://fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com",
     "http://be-be-c957f-21216619-aeb7ba37580c.kr.lb.naverncp.com",
-    "http://www.foodteacher.xyz"
+    "http://ing-fe-redirectingress-b09e0-21385252-788abb28be2f.kr.lb.naverncp.com",
+    "http://www.foodteacher.xyz",
+    "https://www.foodteacher.xyz"
 ]
 
 app.add_middleware(

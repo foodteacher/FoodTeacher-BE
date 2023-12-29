@@ -30,7 +30,7 @@ def create_tables():
     Base.metadata.create_all(bind=db_engine)
 
 def get_application():
-    app = FastAPI()
+    app = FastAPI(docs_url='/api/docs', openapi_url='/api/openapi.json')
     create_tables()
     return app
 

@@ -1,14 +1,14 @@
-# fastapi
-from fastapi import FastAPI, Depends, HTTPException, Response
-from fastapi.responses import RedirectResponse, HTMLResponse
-from typing import Optional
-import requests
-import json
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.api import api_router
+
+from .db.session import Base, engine
 # service
 from .service.clova_ai import get_executor
 from .service.bmr_calculator import calculate_bmr
 from .service.food_teacher import get_diet_exercise_advice
-from .db.session import Base, engine
+
 
 
 # app 생성
@@ -22,8 +22,7 @@ def get_application():
 
 app = get_application()
 
-# CORS 설정
-from fastapi.middleware.cors import CORSMiddleware
+
 origins = [
     "http://localhost:3000",
     "http://be-be-c957f-21216619-aeb7ba37580c.kr.lb.naverncp.com",
@@ -38,6 +37,8 @@ app.add_middleware(
     allow_methods=["*"],  # 모든 HTTP 메서드를 허용하려면 "*"
     allow_headers=["*"],  # 모든 HTTP 헤더를 허용하려면 "*"
 )
+
+app.include_router(api_router)
 
 @app.get("/")
 def read_root():

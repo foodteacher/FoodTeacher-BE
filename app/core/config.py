@@ -18,8 +18,6 @@ class Settings(BaseSettings):
 
     # JWT 설정 정보
     SECRET_KEY: str
-    ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int
 
     class Config:
         env_file = ".env"

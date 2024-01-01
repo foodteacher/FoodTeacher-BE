@@ -4,30 +4,16 @@ from fastapi.responses import RedirectResponse, HTMLResponse
 from typing import Optional
 import requests
 import json
-# JWT
-from jose import JWTError, jwt
-from passlib.context import CryptContext
-from datetime import datetime, timedelta
-# db
-from app.db.session import db_engine, conn_test
-from app.db.base import Base
-from sqlalchemy.orm import Session  # 데이터베이스 세션을 사용하기 위해 추가
-from app.db.session import get_db, SessionLocal  # SessionLocal을 가져옴
-from .db import base
-# python 데이터 모델
-from .schemas import user
 # service
 from .service.clova_ai import get_executor
 from .service.bmr_calculator import calculate_bmr
 from .service.food_teacher import get_diet_exercise_advice
-#security
-# from app.security.jwt import get_current_user, get_jwt
-# from fastapi.security import OAuth2PasswordRequestForm
-# from .security.jwt import oauth2_scheme
+from .db.session import Base, engine
+
 
 # app 생성
 def create_tables():
-    Base.metadata.create_all(bind=db_engine)
+    Base.metadata.create_all(bind=engine)
 
 def get_application():
     app = FastAPI()
@@ -56,32 +42,6 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     return "hello, 팩트폭행단~!"
-
-############################################# 임시 api ####################################
-@app.get("/del")
-def del_db_table(db: Session = Depends(get_db)):
-    base.delete_all_users(db)
-    return "good"
-
-@app.get("/temp")
-async def temp_endpoint(db: Session = Depends(get_db)):
-
-    user_data = user.UserCreateModel(
-        name="서경원",
-        height=432,
-        weight=23,
-        age=29,
-        gender="남성",
-        targetWeight=444
-    )
-    result = await base.user_create(user_data, db)
-
-    return result
-
-# @app.get("/db_test")
-# def db_test():
-#     conn_test(db_engine)
-#     return "very good!"
 
 ############################################# kakao api ####################################
 # # 엑세스 토큰을 저장할 변수

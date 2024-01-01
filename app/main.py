@@ -90,53 +90,53 @@ def read_root():
 #         raise HTTPException(status_code=401, detail="Kakao authentication failed")
 
 ############################################# 유저 관련 api ###########################################    
-@app.post("/users")
-async def create_user(user_data: user.UserCreateModel, db: Session = Depends(get_db)):
-    user = await base.user_create(db=db, user_data=user_data)
-    return {"user_id": user.userId}
+# @app.post("/users")
+# async def create_user(user_data: user.UserCreateModel, db: Session = Depends(get_db)):
+#     user = await base.user_create(db=db, user_data=user_data)
+#     return {"user_id": user.userId}
 
-@app.get("/users/{user_id}")
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    user = base.get_user_by_user_id(db, user_id)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+# @app.get("/users/{user_id}")
+# def read_user(user_id: int, db: Session = Depends(get_db)):
+#     user = base.get_user_by_user_id(db, user_id)
+#     if user is None:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     return user
 
-@app.delete("/users")
-def delete_users(db: Session = Depends(get_db)):
-    base.delete_all_users(db)
-    return {"message": "All users deleted"}
+# @app.delete("/users")
+# def delete_users(db: Session = Depends(get_db)):
+#     base.delete_all_users(db)
+#     return {"message": "All users deleted"}
 
-@app.get("/users/{user_id}/bmr")
-def read_user_bmr(user_id: int, db: Session = Depends(get_db)):
-    user = base.user_read(db, user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return {"bmr": calculate_bmr(user)}
+# @app.get("/users/{user_id}/bmr")
+# def read_user_bmr(user_id: int, db: Session = Depends(get_db)):
+#     user = base.user_read(db, user_id)
+#     if not user:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     return {"bmr": calculate_bmr(user)}
 
-@app.post("/users/{user_id}/diet-exercise-advice")
-async def get_answer_from_clova(user_id: int, user_input: user.UserInput, db: Session = Depends(get_db)):
-    executor = get_executor()
-    user = await base.get_user_by_user_id(db, user_id)
-    bmr = calculate_bmr(user)
+# @app.post("/users/{user_id}/diet-exercise-advice")
+# async def get_answer_from_clova(user_id: int, user_input: user.UserInput, db: Session = Depends(get_db)):
+#     executor = get_executor()
+#     user = await base.get_user_by_user_id(db, user_id)
+#     bmr = calculate_bmr(user)
 
-    result = get_diet_exercise_advice(executor, bmr, user_input.query)
-    print(result)
-    data = json.loads(result)
+#     result = get_diet_exercise_advice(executor, bmr, user_input.query)
+#     print(result)
+#     data = json.loads(result)
 
-    if "error" in data:
-        raise HTTPException(status_code=404, detail="error has been occured")
-    return data
+#     if "error" in data:
+#         raise HTTPException(status_code=404, detail="error has been occured")
+#     return data
 
-@app.post("/users/diet-exercise-advice")
-async def get_answer_from_clova(user_input: user.TempUserInput, db: Session = Depends(get_db)):
-    executor = get_executor()
-    bmr = calculate_bmr(user_input)
+# @app.post("/users/diet-exercise-advice")
+# async def get_answer_from_clova(user_input: user.TempUserInput, db: Session = Depends(get_db)):
+#     executor = get_executor()
+#     bmr = calculate_bmr(user_input)
 
-    result = get_diet_exercise_advice(executor, bmr, user_input.query)
-    print(result)
-    data = json.loads(result)
+#     result = get_diet_exercise_advice(executor, bmr, user_input.query)
+#     print(result)
+#     data = json.loads(result)
 
-    if "error" in data:
-        raise HTTPException(status_code=404, detail="error has been occured")
-    return data
+#     if "error" in data:
+#         raise HTTPException(status_code=404, detail="error has been occured")
+#     return data

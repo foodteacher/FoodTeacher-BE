@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from ..base_class import Base
+from ..db.session import Base
 
 # DietPlanMenu 모델 정의
 class DietPlanMenu(Base):

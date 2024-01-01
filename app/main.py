@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session  # 데이터베이스 세션을 사용하기 
 from app.db.session import get_db, SessionLocal  # SessionLocal을 가져옴
 from .db import base
 # python 데이터 모델
-from . import utils
+from .schemas import user
 # service
 from .service.clova_ai import get_executor
 from .service.bmr_calculator import calculate_bmr
@@ -66,7 +66,7 @@ def del_db_table(db: Session = Depends(get_db)):
 @app.get("/temp")
 async def temp_endpoint(db: Session = Depends(get_db)):
 
-    user_data = utils.UserCreateModel(
+    user_data = user.UserCreateModel(
         name="서경원",
         height=432,
         weight=23,
@@ -131,7 +131,7 @@ async def temp_endpoint(db: Session = Depends(get_db)):
 
 ############################################# 유저 관련 api ###########################################    
 @app.post("/users")
-async def create_user(user_data: utils.UserCreateModel, db: Session = Depends(get_db)):
+async def create_user(user_data: user.UserCreateModel, db: Session = Depends(get_db)):
     user = await base.user_create(db=db, user_data=user_data)
     return {"user_id": user.userId}
 
@@ -155,7 +155,7 @@ def read_user_bmr(user_id: int, db: Session = Depends(get_db)):
     return {"bmr": calculate_bmr(user)}
 
 @app.post("/users/{user_id}/diet-exercise-advice")
-async def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: Session = Depends(get_db)):
+async def get_answer_from_clova(user_id: int, user_input: user.UserInput, db: Session = Depends(get_db)):
     executor = get_executor()
     user = await base.get_user_by_user_id(db, user_id)
     bmr = calculate_bmr(user)
@@ -169,7 +169,7 @@ async def get_answer_from_clova(user_id: int, user_input: utils.UserInput, db: S
     return data
 
 @app.post("/users/diet-exercise-advice")
-async def get_answer_from_clova(user_input: utils.TempUserInput, db: Session = Depends(get_db)):
+async def get_answer_from_clova(user_input: user.TempUserInput, db: Session = Depends(get_db)):
     executor = get_executor()
     bmr = calculate_bmr(user_input)
 

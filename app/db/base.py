@@ -7,7 +7,7 @@ from sqlalchemy.exc import OperationalError
 
 from sqlalchemy.orm import Session
 
-from .. import utils
+from ..schemas import user
 
 def user_save_access_token(db: Session, access_token: str):
     user = User(kakao_token=access_token)
@@ -47,7 +47,7 @@ async def get_user_by_user_id_retry(db: Session, user_id: int, max_retries: int 
 async def get_user_by_kakao_id(db: Session, kakao_id: int):
     return db.query(User).filter(User.kakao_id == kakao_id).first()
 
-async def user_create(user_data: utils.UserCreateModel, db: Session):
+async def user_create(user_data: user.UserCreateModel, db: Session):
     user = User(
         name = user_data.name,
         height = user_data.height,

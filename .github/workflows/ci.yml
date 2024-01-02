@@ -24,7 +24,12 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
+    - name: test
+      run: |
+        uvicorn app.main:app --host 0.0.0.0 --port 8000
+        
     - name: build and push
+      if: success()
       uses: docker/build-push-action@v3
       with:
         context: .
@@ -42,3 +47,10 @@ jobs:
         sed -i "s|gracehpark/foodteacher-be:.*|gracehpark/foodteacher-be:${{ github.sha }}|g" be-deployment.yaml
         git commit -am "Update Docker Image Name"
         git push
+
+    - name: Discord notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'

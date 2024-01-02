@@ -7,7 +7,7 @@ from ..db.session import Base
 class User(Base):
     __tablename__ = "Users"
 
-    userId = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255))
     height = Column(Float)
     weight = Column(Float)

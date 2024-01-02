@@ -7,7 +7,7 @@ from ..db.session import Base
 class UserDietPlan(Base):
     __tablename__ = "UserDietPlans"
 
-    userDietId = Column(String(255), primary_key=True)
+    id = Column(String(255), primary_key=True)
     userId = Column(Integer, ForeignKey("Users.userId"), nullable=False)
     description = Column(Text)
 

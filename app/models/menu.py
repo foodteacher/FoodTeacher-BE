@@ -7,7 +7,7 @@ from ..db.session import Base
 class Menu(Base):
     __tablename__ = "Menus"
 
-    menuId = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255))
     calories = Column(Float)
 

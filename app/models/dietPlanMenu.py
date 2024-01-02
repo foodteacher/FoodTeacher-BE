@@ -7,8 +7,8 @@ from ..db.session import Base
 class DietPlanMenu(Base):
     __tablename__ = "DietPlanMenus"
 
-    userDietId = Column(String(255), ForeignKey("UserDietPlans.userDietId"), primary_key=True)
-    menuId = Column(Integer, ForeignKey("Menus.menuId"), primary_key=True)
+    id = Column(String(255), ForeignKey("UserDietPlans.id"), primary_key=True)
+    menuId = Column(Integer, ForeignKey("Menus.id"), primary_key=True)
 
     # UserDietPlan 모델과의 관계 정의
     user_diet_plan = relationship("UserDietPlan", back_populates="menu_items")

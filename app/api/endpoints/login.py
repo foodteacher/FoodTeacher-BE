@@ -6,29 +6,77 @@ from sqlalchemy.orm import Session
 from app.core.config import get_setting
 from app.core.security import create_access_token
 from app.db.session import get_db
-from app.schemas.user import UserCreate
+from app.schemas.user import KakaoCode
 from app.crud.user import crud_user
+
+import requests
 
 router = APIRouter()
 settings = get_setting()
 
-@router.post("/register")
-def post(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = crud_user.get_by_username(db, username=user.username)
-    if db_user:
-        raise HTTPException(status_code=400, detail="username already registered")
-    return crud_user.create(db=db, obj_in=user)
+# @router.post("/register")
+# def post(user: UserCreate, db: Session = Depends(get_db)):
+#     db_user = crud_user.get_by_username(db, username=user.username)
+#     if db_user:
+#         raise HTTPException(status_code=400, detail="username already registered")
+#     return crud_user.create(db=db, obj_in=user)
 
 
-@router.post("/login/access-token")
-async def login_for_access_token(user: UserCreate, db: Session = Depends(get_db)):
-    user = crud_user.authenticate(db=db, username=user.username, password=user.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(subject=user.username, expires_delta=access_token_expires)
-    return {"access_token": access_token, "token_type": "bearer"}
+# @router.post("/login/access-token")
+# async def login_for_access_token(user: UserCreate, db: Session = Depends(get_db)):
+#     user = crud_user.authenticate(db=db, username=user.username, password=user.password)
+#     if not user:
+#         raise HTTPException(
+#             status_code=status.HTTP_401_UNAUTHORIZED,
+#             detail="Incorrect username or password",
+#             headers={"WWW-Authenticate": "Bearer"},
+#         )
+#     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+#     access_token = create_access_token(subject=user.username, expires_delta=access_token_expires)
+#     return {"access_token": access_token, "token_type": "bearer"}
+
+# 엑세스 토큰을 저장할 변수
+@router.post('/login')
+async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)):
+    REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
+    # REDIRECT_URI = 'http://fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com/signup'
+    REDIRECT_URI = "http://localhost:3000/signup"
+    _url = f'https://kauth.kakao.com/oauth/token'
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    data = {
+        "grant_type": "authorization_code",
+        "client_id": REST_API_KEY,
+        "code": authorization_code.code,
+        "redirect_uri": REDIRECT_URI
+    }
+    _res = requests.post(_url, headers=headers, data=data) 
+    _result = _res.json()
+    access_token = _result.get("access_token")
+    refresh_token = _result.get("refresh_token")
+
+    base.user_save_access_token(db, access_token)
+
+    _url = "https://kapi.kakao.com/v2/user/me"
+    kakao_user_id = get_kakao_user_id(_url, access_token)
+    user = base.get_user_by_kakao_id(db, kakao_id=kakao_user_id)
+    if user:
+        return {"user_id": user.userId}
+    user = base.user_save_kakao_id(db, kakao_user_id, access_token)
+    # jwt = get_jwt(kakao_user_id)
+
+    return {"new_user_id": user.userId}
+
+def get_kakao_user_id(_url, access_token):
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    _res = requests.get(_url, headers=headers)
+
+    if _res.status_code == 200:
+        response_data = _res.json()
+        user_id = response_data.get("id")
+        return user_id
+    else:
+        raise HTTPException(status_code=401, detail="Kakao authentication failed")

@@ -20,5 +20,5 @@ def read_user_me(current_user: User = Depends(get_current_user)) -> UserRead:
 @router.patch('/register', response_model=UserRead)
 def register_user(*, db: Session = Depends(get_db), new_user_data: UserRegist = Body(None), current_user: User = Depends(get_current_user)):
     current_user_data = jsonable_encoder(current_user)
-    user = crud_user.update(db, db_obj=current_user, obj_in=new_user_data)
+    user = crud_user.update(db, db_obj=current_user_data, obj_in=new_user_data)
     return user

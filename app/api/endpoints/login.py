@@ -42,13 +42,13 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     _result = _res.json()
     kakao_access_token = _result.get("access_token")
     kakao_refresh_token = _result.get("refresh_token")
-    print(_result)
 
     _url = "https://kapi.kakao.com/v2/user/me"
     kakao_id = get_kakao_id(_url, kakao_access_token)
-
+    print(kakao_id)
     user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
     jwt = get_jwt(db=db, kakao_id=kakao_id)
+    print(jwt)
     if user:
         return jwt
     

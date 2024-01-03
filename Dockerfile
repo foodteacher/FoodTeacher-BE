@@ -1,6 +1,6 @@
 FROM python:3.9
-ENV MYSQL_HOST=10.111.96.92
-ENV MYSQL_PORT=3306
+ENV MYSQL_HOST=34.125.247.54
+ENV MYSQL_PORT=8000
 ENV MYSQL_ROOT_PASSWORD=foodteacher123
 ENV MYSQL_DATABASE=foodteacher
 ENV MYSQL_USER=user1
@@ -20,7 +20,5 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 # 
 COPY ./app /code/app
 
-#
-RUN uvicorn app.main:app --host 0.0.0.0 --port 8000
 # 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

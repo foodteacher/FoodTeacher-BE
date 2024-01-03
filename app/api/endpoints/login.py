@@ -56,18 +56,18 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     _result = _res.json()
     kakao_access_token = _result.get("access_token")
     kakao_refresh_token = _result.get("refresh_token")
+    print(_result)
 
     _url = "https://kapi.kakao.com/v2/user/me"
     kakao_id = get_kakao_id(_url, kakao_access_token)
 
     user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
+    jwt = get_jwt(db=db, kakao_id=kakao_id)
     if user:
-        return {"user_id": user.id}
+        return jwt
     
     obj_in = UserCreate(kakao_id=kakao_id)
     user = crud_user.create(db, obj_in=obj_in)
-
-    jwt = get_jwt(db=db, obj_in=obj_in)
 
     return jwt
 
@@ -84,8 +84,8 @@ def get_kakao_id(_url, kakao_access_token):
     else:
         raise HTTPException(status_code=401, detail="Kakao authentication failed")
     
-def get_jwt(*, obj_in: UserCreate, db: Session = Depends(get_db)):
-    user = crud_user.get_by_kakao_id(db, kakao_id=obj_in.kakao_id)
+def get_jwt(*, kakao_id: int, db: Session = Depends(get_db)):
+    user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

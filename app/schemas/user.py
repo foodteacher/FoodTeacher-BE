@@ -2,10 +2,10 @@ from pydantic import BaseModel
 from typing import Optional
 
 class UserBase(BaseModel):
-    id: int
+    id: Optional[int] = None
 
 class UserCreate(UserBase):
-    kakao_id: str
+    kakao_id: int
 
 class UserSignup(UserCreate):
     name: str
@@ -25,7 +25,7 @@ class UserInput(BaseModel):
     query: str
 
 class UserInDBBase(UserBase):
-    kakao_id: str
+    kakao_id: int
     name: str
     height: float
     weight: float

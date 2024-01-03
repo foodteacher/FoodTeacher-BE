@@ -15,7 +15,6 @@ router = APIRouter()
 
 @router.get("/me", response_model=UserRead)
 def read_user_me(current_user: User = Depends(get_current_user)) -> UserRead:
-    print(current_user)
     return current_user
 
 @router.patch('/register', response_model=UserRead)

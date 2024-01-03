@@ -7,7 +7,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     kakao_id: int
 
-class UserRegist(UserCreate):
+class UserRegist(BaseModel):
     name: str
     height: float
     weight: float

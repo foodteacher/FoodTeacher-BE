@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from app.core.config import get_setting
 from app.core.security import create_access_token
 from app.db.session import get_db
-from app.schemas.user import KakaoCode
+from app.schemas.user import KakaoCode, UserCreate
+from app.schemas.token import Token
 from app.crud.user import crud_user
 
 import requests
@@ -53,24 +54,26 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     }
     _res = requests.post(_url, headers=headers, data=data) 
     _result = _res.json()
-    access_token = _result.get("access_token")
-    refresh_token = _result.get("refresh_token")
-
-    base.user_save_access_token(db, access_token)
+    kakao_access_token = _result.get("access_token")
+    kakao_refresh_token = _result.get("refresh_token")
 
     _url = "https://kapi.kakao.com/v2/user/me"
-    kakao_user_id = get_kakao_user_id(_url, access_token)
-    user = base.get_user_by_kakao_id(db, kakao_id=kakao_user_id)
+    kakao_id = get_kakao_id(_url, kakao_access_token)
+
+    user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
     if user:
-        return {"user_id": user.userId}
-    user = base.user_save_kakao_id(db, kakao_user_id, access_token)
-    # jwt = get_jwt(kakao_user_id)
+        return {"user_id": user.id}
+    
+    obj_in = UserCreate(kakao_id=kakao_id)
+    user = crud_user.create(db, obj_in=obj_in)
 
-    return {"new_user_id": user.userId}
+    jwt = get_jwt(db=db, obj_in=obj_in)
 
-def get_kakao_user_id(_url, access_token):
+    return jwt
+
+def get_kakao_id(_url, kakao_access_token):
     headers = {
-        "Authorization": f"Bearer {access_token}"
+        "Authorization": f"Bearer {kakao_access_token}"
     }
     _res = requests.get(_url, headers=headers)
 
@@ -80,3 +83,18 @@ def get_kakao_user_id(_url, access_token):
         return user_id
     else:
         raise HTTPException(status_code=401, detail="Kakao authentication failed")
+    
+def get_jwt(*, obj_in: UserCreate, db: Session = Depends(get_db)):
+    user = crud_user.get_by_kakao_id(db, kakao_id=obj_in.kakao_id)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            # detail="Incorrect username or password",
+            detail="Incorrect kakao_id",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(subject=user.kakao_id, expires_delta=access_token_expires)
+    
+    res = Token(access_token=access_token, token_type="bearer")
+    return res

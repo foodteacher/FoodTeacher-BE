@@ -14,7 +14,7 @@ from app.schemas.token import TokenPayload
 
 from app.db.session import get_db
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/login/access-token")
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/login")
 settings = get_setting()
 
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)) -> User:
@@ -28,13 +28,13 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusabl
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
         )
-    user = crud_user.get_by_username(db, username=token_data.sub)
+    user = crud_user.get_by_kakao_id(db, kakao_id=token_data.sub)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
 
-def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
-    if not crud_user.is_active(current_user):
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
+# def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
+#     if not crud_user.is_active(current_user):
+#         raise HTTPException(status_code=400, detail="Inactive user")
+#     return current_user

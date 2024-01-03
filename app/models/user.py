@@ -8,6 +8,7 @@ class User(Base):
     __tablename__ = "Users"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    kakao_id = Column(String(255))
     name = Column(String(255))
     height = Column(Float)
     weight = Column(Float)

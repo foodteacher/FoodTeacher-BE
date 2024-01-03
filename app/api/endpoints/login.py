@@ -22,20 +22,6 @@ settings = get_setting()
 #         raise HTTPException(status_code=400, detail="username already registered")
 #     return crud_user.create(db=db, obj_in=user)
 
-
-# @router.post("/login/access-token")
-# async def login_for_access_token(user: UserCreate, db: Session = Depends(get_db)):
-#     user = crud_user.authenticate(db=db, username=user.username, password=user.password)
-#     if not user:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Incorrect username or password",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-#     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-#     access_token = create_access_token(subject=user.username, expires_delta=access_token_expires)
-#     return {"access_token": access_token, "token_type": "bearer"}
-
 # 엑세스 토큰을 저장할 변수
 @router.post('/login')
 async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)):

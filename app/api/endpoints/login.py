@@ -27,7 +27,7 @@ settings = get_setting()
 async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)):
     REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
     # REDIRECT_URI = 'http://fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com/signup'
-    REDIRECT_URI = "http://localhost:3000/signup"
+    REDIRECT_URI = "http://localhost:3000/oauth"
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"

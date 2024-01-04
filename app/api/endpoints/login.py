@@ -51,7 +51,7 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     print(jwt)
     if user:
         return jwt
-    
+
     obj_in = UserCreate(kakao_id=kakao_id)
     user = crud_user.create(db, obj_in=obj_in)
 

@@ -13,4 +13,4 @@ class User(Base):
     weight = Column(Float)
     age = Column(Integer)
     gender = Column(String(255))
-    targetWeight = Column(Float)
+    target_weight = Column(Float)

@@ -71,16 +71,8 @@ def get_kakao_id(_url, kakao_access_token):
         raise HTTPException(status_code=401, detail="Kakao authentication failed")
     
 def get_jwt(*, kakao_id: int, db: Session = Depends(get_db)):
-    user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            # detail="Incorrect username or password",
-            detail="Incorrect kakao_id",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(subject=user.kakao_id, expires_delta=access_token_expires)
+    access_token = create_access_token(subject=kakao_id, expires_delta=access_token_expires)
     
     res = Token(access_token=access_token, token_type="bearer")
     return res

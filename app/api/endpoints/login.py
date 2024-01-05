@@ -4,13 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.core.config import get_setting
-from app.core.security import create_access_token
+from app.core.security import create_token
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.user import KakaoCode, UserCreate, UserUpdate
 from app.schemas.token import Token
 from app.crud.user import crud_user
-from app.api.depends import get_current_user
+from app.api.depends import get_current_user, validate_refresh_token
 
 import requests
 
@@ -41,6 +41,22 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     obj_in = UserCreate(kakao_id=kakao_id)
     user = crud_user.create(db, obj_in=obj_in)
     return jwt
+
+@router.post("/refresh-token")
+async def get_refresh_token(refresh_token: str,current_user: User = Depends(get_current_user)) -> Token:
+    # 리프레시 토큰 검증 로직
+    # 예: 데이터베이스에서 리프레시 토큰 확인, 만료 시간 검사 등
+    is_valid = validate_refresh_token(refresh_token)
+
+    if not is_valid:
+        raise HTTPException(
+            status_code=401,
+            detail="Refresh token is expired. Please log in again."
+        )
+    
+    access_token = create_token(subject=current_user.kakao_id, expires_delta=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    res = Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+    return res
 
 def get_kakao_token(authorization_code: KakaoCode):
     REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
@@ -79,9 +95,9 @@ def get_kakao_id(kakao_access_token):
     
 def get_jwt(*, kakao_id: int, db: Session = Depends(get_db)) -> Token:
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(subject=kakao_id, expires_delta=access_token_expires)
+    access_token = create_token(subject=kakao_id, expires_delta=access_token_expires)
     
     refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
-    refresh_token = create_access_token(subject=kakao_id, expires_delta=refresh_token_expires)
+    refresh_token = create_token(subject=kakao_id, expires_delta=refresh_token_expires)
     res = Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
     return res

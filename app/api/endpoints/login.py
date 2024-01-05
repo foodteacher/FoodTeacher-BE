@@ -25,8 +25,24 @@ settings = get_setting()
 # 엑세스 토큰을 저장할 변수
 @router.post('/login')
 async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)):
+    kakao_token = get_kakao_token(authorization_code=authorization_code)
+    kakao_access_token = kakao_token.get("access_token")
+    # kakao_refresh_token = kakao_token.get("refresh_token")
+
+    _url = "https://kapi.kakao.com/v2/user/me"
+    kakao_id = get_kakao_id(_url, kakao_access_token)
+    user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
+    jwt = get_jwt(db=db, kakao_id=kakao_id)
+    if user:
+        return jwt
+
+    obj_in = UserCreate(kakao_id=kakao_id)
+    user = crud_user.create(db, obj_in=obj_in)
+
+    return jwt
+
+def get_kakao_token(authorization_code: KakaoCode):
     REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
-    # REDIRECT_URI = 'http://fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com/signup'
     REDIRECT_URI = "http://localhost:3000/oauth"
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {
@@ -38,24 +54,13 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
         "code": authorization_code.code,
         "redirect_uri": REDIRECT_URI
     }
-    _res = requests.post(_url, headers=headers, data=data) 
-    _result = _res.json()
-    kakao_access_token = _result.get("access_token")
-    kakao_refresh_token = _result.get("refresh_token")
-
-    _url = "https://kapi.kakao.com/v2/user/me"
-    kakao_id = get_kakao_id(_url, kakao_access_token)
-    print(kakao_id)
-    user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
-    jwt = get_jwt(db=db, kakao_id=kakao_id)
-    print(jwt)
-    if user:
-        return jwt
-
-    obj_in = UserCreate(kakao_id=kakao_id)
-    user = crud_user.create(db, obj_in=obj_in)
-
-    return jwt
+    _res = requests.post(_url, headers=headers, data=data)
+    
+    if _res.status_code == 200:
+        _result = _res.json()
+        return _result
+    else:
+        raise HTTPException(status_code=401, detail="Kakao code authentication failed")
 
 def get_kakao_id(_url, kakao_access_token):
     headers = {
@@ -68,11 +73,13 @@ def get_kakao_id(_url, kakao_access_token):
         user_id = response_data.get("id")
         return user_id
     else:
-        raise HTTPException(status_code=401, detail="Kakao authentication failed")
+        raise HTTPException(status_code=401, detail="Kakao access token authentication failed")
     
 def get_jwt(*, kakao_id: int, db: Session = Depends(get_db)):
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(subject=kakao_id, expires_delta=access_token_expires)
     
-    res = Token(access_token=access_token, token_type="bearer")
+    refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
+    refresh_token = create_access_token(subject=kakao_id, expires_delta=refresh_token_expires)
+    res = Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
     return res

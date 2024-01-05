@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 
 from app.core.config import get_setting
@@ -8,7 +8,7 @@ from app.core.security import create_token
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.user import KakaoCode, UserCreate, UserUpdate
-from app.schemas.token import Token
+from app.schemas.token import Token, RefreshToken
 from app.crud.user import crud_user
 from app.api.depends import get_current_user, validate_refresh_token
 
@@ -25,7 +25,7 @@ settings = get_setting()
 #     return crud_user.create(db=db, obj_in=user)
 
 # 엑세스 토큰을 저장할 변수
-@router.post('/login')
+@router.post('/')
 async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     kakao_token = get_kakao_token(authorization_code=authorization_code)
     kakao_access_token = kakao_token.get("access_token")
@@ -42,8 +42,8 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     user = crud_user.create(db, obj_in=obj_in)
     return jwt
 
-@router.post("/refresh-token")
-async def get_refresh_token(refresh_token: str,current_user: User = Depends(get_current_user)) -> Token:
+@router.post("/refresh")
+async def get_refresh_token(refresh_token: str = Body(...),current_user: User = Depends(get_current_user)) -> Token:
     # 리프레시 토큰 검증 로직
     # 예: 데이터베이스에서 리프레시 토큰 확인, 만료 시간 검사 등
     is_valid = validate_refresh_token(refresh_token)

@@ -11,11 +11,13 @@ from app.db.session import SessionLocal
 from app.models.user import User
 from app.crud.user import crud_user
 from app.schemas.token import TokenPayload
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from app.db.session import get_db
 
-reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/login")
+from app.core.session import verifier
+
+reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/login/")
 settings = get_setting()
 
 def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)) -> User:
@@ -34,7 +36,7 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusabl
         raise HTTPException(status_code=404, detail="User not found")
     
     exp = token_data.exp
-    if datetime.fromtimestamp(exp) < datetime.now():
+    if datetime.fromtimestamp(exp) > datetime.now():
         return user
     else:
         raise HTTPException(

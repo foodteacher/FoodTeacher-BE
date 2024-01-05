@@ -18,7 +18,6 @@ def read_user_me(current_user: User = Depends(get_current_user)) -> UserRead:
     return current_user
 
 @router.patch('/register', response_model=UserRead)
-def register_user(*, db: Session = Depends(get_db), new_user_data: UserUpdate = Body(None), current_user: User = Depends(get_current_user)):
-    current_user_data = current_user
-    user = crud_user.update(db, db_obj=current_user_data, obj_in=new_user_data)
+def register_user(*, db: Session = Depends(get_db), new_user_data: UserUpdate, current_user: User = Depends(get_current_user)) -> UserRead:
+    user = crud_user.update(db, db_obj=current_user, obj_in=new_user_data)
     return user

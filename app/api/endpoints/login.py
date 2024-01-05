@@ -8,9 +8,10 @@ from app.core.security import create_token
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.user import KakaoCode, UserCreate, UserUpdate
-from app.schemas.token import Token, RefreshToken
+from app.schemas.token import Token
 from app.crud.user import crud_user
 from app.api.depends import get_current_user, validate_refresh_token
+from fastapi_sessions import session_verifier
 
 import requests
 
@@ -26,7 +27,7 @@ settings = get_setting()
 
 # 엑세스 토큰을 저장할 변수
 @router.post('/')
-async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)):
     kakao_token = get_kakao_token(authorization_code=authorization_code)
     kakao_access_token = kakao_token.get("access_token")
     # kakao_refresh_token = kakao_token.get("refresh_token")
@@ -34,11 +35,11 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     kakao_id = get_kakao_id(kakao_access_token)
     user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
     jwt = get_jwt(db=db, kakao_id=kakao_id)
-    new_user_data = UserUpdate(refresh_token=jwt.refresh_token)
-    crud_user.update(db=db, db_obj=current_user, obj_in=new_user_data)
     if user:
+        new_user_data = UserUpdate(refresh_token=jwt.refresh_token)
+        crud_user.update(db=db, db_obj=user, obj_in=new_user_data)
         return jwt
-    obj_in = UserCreate(kakao_id=kakao_id)
+    obj_in = UserCreate(kakao_id=kakao_id, refresh_token=jwt.refresh_token)
     user = crud_user.create(db, obj_in=obj_in)
     return jwt
 
@@ -59,8 +60,8 @@ async def get_refresh_token(refresh_token: str = Body(...),current_user: User = 
     return res
 
 def get_kakao_token(authorization_code: KakaoCode):
-    REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
-    REDIRECT_URI = "http://localhost:3000/oauth"
+    REST_API_KEY = '06496bedb86df7f2d9748e6a4df70213'
+    REDIRECT_URI = "http://localhost:3000/main"
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -99,5 +100,5 @@ def get_jwt(*, kakao_id: int, db: Session = Depends(get_db)) -> Token:
     
     refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
     refresh_token = create_token(subject=kakao_id, expires_delta=refresh_token_expires)
-    res = Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+    res = Token(access_token=access_token, refresh_token=refresh_token, token_type="Bearer")
     return res

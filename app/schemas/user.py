@@ -6,6 +6,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     kakao_id: int
+    refresh_token: str
 
 class UserUpdate(UserBase):
     name: str = None

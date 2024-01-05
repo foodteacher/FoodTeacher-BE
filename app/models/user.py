@@ -14,3 +14,4 @@ class User(Base):
     age = Column(Integer)
     gender = Column(String(255))
     target_weight = Column(Float)
+    refresh_token = Column(String(255))

@@ -7,16 +7,14 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     kakao_id: int
 
-class UserRegist(BaseModel):
-    name: str
-    height: float
-    weight: float
-    age: int
-    gender: str
-    target_weight: float
-
 class UserUpdate(UserBase):
-    username: Optional[str] = None
+    name: str = None
+    height: float = None
+    weight: float = None
+    age: int = None
+    gender: str = None
+    target_weight: float = None
+    refresh_token: str = None
 
 class KakaoCode(BaseModel):
     code: str
@@ -32,6 +30,7 @@ class UserInDBBase(UserBase):
     age: int
     gender: str
     target_weight: float
+    refresh_token: str
 
     class Config:
         from_attributes = True

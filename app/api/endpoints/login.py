@@ -6,9 +6,11 @@ from sqlalchemy.orm import Session
 from app.core.config import get_setting
 from app.core.security import create_access_token
 from app.db.session import get_db
-from app.schemas.user import KakaoCode, UserCreate
+from app.models.user import User
+from app.schemas.user import KakaoCode, UserCreate, UserUpdate
 from app.schemas.token import Token
 from app.crud.user import crud_user
+from app.api.depends import get_current_user
 
 import requests
 
@@ -24,21 +26,20 @@ settings = get_setting()
 
 # 엑세스 토큰을 저장할 변수
 @router.post('/login')
-async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)):
+async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     kakao_token = get_kakao_token(authorization_code=authorization_code)
     kakao_access_token = kakao_token.get("access_token")
     # kakao_refresh_token = kakao_token.get("refresh_token")
 
-    _url = "https://kapi.kakao.com/v2/user/me"
-    kakao_id = get_kakao_id(_url, kakao_access_token)
+    kakao_id = get_kakao_id(kakao_access_token)
     user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
     jwt = get_jwt(db=db, kakao_id=kakao_id)
+    new_user_data = UserUpdate(refresh_token=jwt.refresh_token)
+    crud_user.update(db=db, db_obj=current_user, obj_in=new_user_data)
     if user:
         return jwt
-
     obj_in = UserCreate(kakao_id=kakao_id)
     user = crud_user.create(db, obj_in=obj_in)
-
     return jwt
 
 def get_kakao_token(authorization_code: KakaoCode):
@@ -62,7 +63,8 @@ def get_kakao_token(authorization_code: KakaoCode):
     else:
         raise HTTPException(status_code=401, detail="Kakao code authentication failed")
 
-def get_kakao_id(_url, kakao_access_token):
+def get_kakao_id(kakao_access_token):
+    _url = "https://kapi.kakao.com/v2/user/me"
     headers = {
         "Authorization": f"Bearer {kakao_access_token}"
     }
@@ -75,7 +77,7 @@ def get_kakao_id(_url, kakao_access_token):
     else:
         raise HTTPException(status_code=401, detail="Kakao access token authentication failed")
     
-def get_jwt(*, kakao_id: int, db: Session = Depends(get_db)):
+def get_jwt(*, kakao_id: int, db: Session = Depends(get_db)) -> Token:
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(subject=kakao_id, expires_delta=access_token_expires)
     

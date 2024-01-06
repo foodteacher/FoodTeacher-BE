@@ -11,7 +11,7 @@ from app.models.user import User
 router = APIRouter()
 settings = get_setting()
 
-@router.post('/')
+@router.post('/logout')
 def logout(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     res = crud_user.remove_field(db=db, db_obj=current_user, field="refresh_token")
     return res

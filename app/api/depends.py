@@ -41,26 +41,5 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusabl
     else:
         raise HTTPException(
             status_code=401,
-            detail="Access token is expired. Please request access token"
+            detail="token is expired. Please request access token"
         )
-    
-def validate_refresh_token(refresh_token: str, db: Session) -> User:
-    try:
-        payload = jwt.decode(
-            refresh_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-        )
-        token_data = TokenPayload(**payload)
-    except (jwt.JWTError, ValidationError):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
-        )
-    
-    user = crud_user.get_by_kakao_id(db, kakao_id=token_data.sub)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    exp = token_data.exp
-    if datetime.fromtimestamp(exp) < datetime.now():
-        return False
-    return True

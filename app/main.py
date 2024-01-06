@@ -44,77 +44,7 @@ app.include_router(api_router)
 def read_root():
     return "hello, 팩트폭행단~!"
 
-############################################# kakao api ####################################
-# # 엑세스 토큰을 저장할 변수
-# @app.post('/auth')
-# async def kakaoAuth(code: utils.KakaoCode, db: Session = Depends(get_db)):
-#     REST_API_KEY = '536cb646ce60d71102dc92d2b7845c8d'
-#     # REDIRECT_URI = 'http://fe-fe-544a1-21216457-67a2ef796b03.kr.lb.naverncp.com/signup'
-#     REDIRECT_URI = "http://localhost:3000/signup"
-#     _url = f'https://kauth.kakao.com/oauth/token'
-#     headers = {
-#         "Content-Type": "application/x-www-form-urlencoded"
-#     }
-#     data = {
-#         "grant_type": "authorization_code",
-#         "client_id": REST_API_KEY,
-#         "code": code.code,
-#         "redirect_uri": REDIRECT_URI
-#     }
-#     _res = requests.post(_url, headers=headers, data=data) 
-#     _result = _res.json()
-#     access_token = _result.get("access_token")
-
-#     base.user_save_access_token(db, access_token)
-
-#     _url = "https://kapi.kakao.com/v2/user/me"
-#     kakao_user_id = get_kakao_user_id(_url, access_token)
-#     user = base.get_user_by_kakao_id(db, kakao_id=kakao_user_id)
-#     if user:
-#         return {"user_id": user.userId}
-#     user = base.user_save_kakao_id(db, kakao_user_id, access_token)
-#     # jwt = get_jwt(kakao_user_id)
-
-#     return {"new_user_id": user.userId}
-
-# def get_kakao_user_id(_url, access_token):
-#     headers = {
-#         "Authorization": f"Bearer {access_token}"
-#     }
-#     _res = requests.get(_url, headers=headers)
-
-#     if _res.status_code == 200:
-#         response_data = _res.json()
-#         user_id = response_data.get("id")
-#         return user_id
-#     else:
-#         raise HTTPException(status_code=401, detail="Kakao authentication failed")
-
-############################################# 유저 관련 api ###########################################    
-# @app.post("/users")
-# async def create_user(user_data: user.UserCreateModel, db: Session = Depends(get_db)):
-#     user = await base.user_create(db=db, user_data=user_data)
-#     return {"user_id": user.userId}
-
-# @app.get("/users/{user_id}")
-# def read_user(user_id: int, db: Session = Depends(get_db)):
-#     user = base.get_user_by_user_id(db, user_id)
-#     if user is None:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     return user
-
-# @app.delete("/users")
-# def delete_users(db: Session = Depends(get_db)):
-#     base.delete_all_users(db)
-#     return {"message": "All users deleted"}
-
-# @app.get("/users/{user_id}/bmr")
-# def read_user_bmr(user_id: int, db: Session = Depends(get_db)):
-#     user = base.user_read(db, user_id)
-#     if not user:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     return {"bmr": calculate_bmr(user)}
-
+############################################# 서비스 관련 api ###########################################    
 # @app.post("/users/{user_id}/diet-exercise-advice")
 # async def get_answer_from_clova(user_id: int, user_input: user.UserInput, db: Session = Depends(get_db)):
 #     executor = get_executor()

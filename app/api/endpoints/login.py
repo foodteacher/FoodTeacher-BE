@@ -7,10 +7,11 @@ from app.core.config import get_setting
 from app.core.security import create_token
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.user import KakaoCode, UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate
 from app.schemas.token import Token, RefreshToken
+from app.schemas.kakao import KakaoCode
 from app.crud.user import crud_user
-from app.api.depends import get_current_user, validate_refresh_token
+from app.api.depends import get_current_user
 from fastapi_sessions import session_verifier
 
 import requests
@@ -30,39 +31,23 @@ settings = get_setting()
 async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)):
     kakao_token = get_kakao_token(authorization_code=authorization_code)
     kakao_access_token = kakao_token.get("access_token")
-    # kakao_refresh_token = kakao_token.get("refresh_token")
+    kakao_refresh_token = kakao_token.get("refresh_token")
 
     kakao_id = get_kakao_id(kakao_access_token)
     user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
     jwt = get_jwt(db=db, kakao_id=kakao_id)
     if user:
-        new_user_data = UserUpdate(refresh_token=jwt.refresh_token)
+        new_user_data = UserUpdate(kakao_refresh_token=kakao_refresh_token, jwt_refresh_token=jwt.refresh_token)
         crud_user.update(db=db, db_obj=user, obj_in=new_user_data)
         return jwt
-    obj_in = UserCreate(kakao_id=kakao_id, refresh_token=jwt.refresh_token)
+    obj_in = UserCreate(kakao_id=kakao_id, kakao_refresh_token=kakao_refresh_token, jwt_refresh_token=jwt.refresh_token)
     user = crud_user.create(db, obj_in=obj_in)
     return jwt
 
-@router.post("/refresh")
-async def get_refresh_token(refresh_token: RefreshToken, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Token:
-    # 리프레시 토큰 검증 로직
-    # 예: 데이터베이스에서 리프레시 토큰 확인, 만료 시간 검사 등
-    is_valid = validate_refresh_token(refresh_token.token, db=db)
-
-    if not is_valid:
-        raise HTTPException(
-            status_code=401,
-            detail="Refresh token is expired. Please log in again."
-        )
-    
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_token(subject=current_user.kakao_id, expires_delta=access_token_expires)
-    res = Token(access_token=access_token, refresh_token=refresh_token.token, token_type="bearer")
-    return res
 
 def get_kakao_token(authorization_code: KakaoCode):
-    REST_API_KEY = '06496bedb86df7f2d9748e6a4df70213'
-    REDIRECT_URI = "http://localhost:3000/main"
+    REST_API_KEY = settings.REST_API_KEY
+    REDIRECT_URI = settings.REDIRECT_URI
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"

@@ -10,18 +10,16 @@ class Settings(BaseSettings):
     MYSQL_USER: str
     MYSQL_PASSWORD: str
 
-    # # CLOVA 설정 정보
-    # CLOVA_HOST: str
-    # CLOVA_API_KEY: str
-    # CLOVA_API_KEY_PRIMARY_VAL: str
-    # CLOVA_REQUEST_ID: str
-
     # JWT 설정 정보
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     # 60 minutes * 24 hours * 7 days = 7 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 14
+
+    #kakao 설정 정보
+    REST_API_KEY: str
+    REDIRECT_URI: str ="http://localhost:3000/oauth"
 
     class Config:
         env_file = ".env"

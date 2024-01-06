@@ -28,7 +28,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
             update_data = obj_in.model_dump(exclude_unset=True)
         return super().update(db, db_obj=db_obj, obj_in=update_data)
     
-    def remove_field(self, db: Session, db_obj: User, field: str) -> Optional[User]:
+    def remove_field(self, db: Session, *, db_obj: User, field: str) -> Optional[User]:
         if db_obj:
             if hasattr(db_obj, field):
                 setattr(db_obj, field, None)  # 필드 값을 None으로 설정

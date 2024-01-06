@@ -8,7 +8,7 @@ from app.core.security import create_token
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.user import KakaoCode, UserCreate, UserUpdate
-from app.schemas.token import Token
+from app.schemas.token import Token, RefreshToken
 from app.crud.user import crud_user
 from app.api.depends import get_current_user, validate_refresh_token
 from fastapi_sessions import session_verifier
@@ -44,10 +44,10 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     return jwt
 
 @router.post("/refresh")
-async def get_refresh_token(refresh_token: str = Body(...),current_user: User = Depends(get_current_user)) -> Token:
+async def get_refresh_token(refresh_token: RefreshToken, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> Token:
     # 리프레시 토큰 검증 로직
     # 예: 데이터베이스에서 리프레시 토큰 확인, 만료 시간 검사 등
-    is_valid = validate_refresh_token(refresh_token)
+    is_valid = validate_refresh_token(refresh_token.token, db=db)
 
     if not is_valid:
         raise HTTPException(
@@ -55,8 +55,9 @@ async def get_refresh_token(refresh_token: str = Body(...),current_user: User = 
             detail="Refresh token is expired. Please log in again."
         )
     
-    access_token = create_token(subject=current_user.kakao_id, expires_delta=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    res = Token(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_token(subject=current_user.kakao_id, expires_delta=access_token_expires)
+    res = Token(access_token=access_token, refresh_token=refresh_token.token, token_type="bearer")
     return res
 
 def get_kakao_token(authorization_code: KakaoCode):

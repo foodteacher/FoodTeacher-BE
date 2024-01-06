@@ -44,10 +44,10 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(reusabl
             detail="Access token is expired. Please request access token"
         )
     
-def validate_refresh_token(db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)) -> User:
+def validate_refresh_token(refresh_token: str, db: Session) -> User:
     try:
         payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+            refresh_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
         token_data = TokenPayload(**payload)
     except (jwt.JWTError, ValidationError):

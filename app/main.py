@@ -14,7 +14,7 @@ from .service.food_teacher import get_diet_exercise_advice
 # app 생성
 def create_tables():
     Base.metadata.create_all(bind=engine)
-
+    
 def get_application():
     app = FastAPI()
     create_tables()

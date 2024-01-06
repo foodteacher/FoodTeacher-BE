@@ -27,7 +27,7 @@ settings = get_setting()
 #     return crud_user.create(db=db, obj_in=user)
 
 # 엑세스 토큰을 저장할 변수
-@router.post('/')
+@router.post('/login')
 async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)):
     kakao_token = get_kakao_token(authorization_code=authorization_code)
     kakao_access_token = kakao_token.get("access_token")

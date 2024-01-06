@@ -44,7 +44,6 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     user = crud_user.create(db, obj_in=obj_in)
     return jwt
 
-
 def get_kakao_token(authorization_code: KakaoCode):
     REST_API_KEY = settings.REST_API_KEY
     REDIRECT_URI = settings.REDIRECT_URI

@@ -7,8 +7,8 @@ from ..db.session import Base
 
 class DietPlanMenu(Base):
     __tablename__ = 'DietPlanMenus'
-    id = Column(Integer, primary_key=True, nullable=False, comment='Auto Increment')
-    userDietId2 = Column(String(255), ForeignKey('UserDietPlans.id'), primary_key=True, comment='Auto Increment')
-    menuId = Column(Integer, ForeignKey('Menus.id'), primary_key=True, comment='Auto Increment')
-    userDietPlan = relationship("UserDietPlan")
-    menu = relationship("Menu")
+    id = Column(Integer, primary_key=True, comment='Auto Increment')
+    userDietId2 = Column(String(255), ForeignKey('UserDietPlans.id'), primary_key=True)
+    menuId = Column(Integer, ForeignKey('Menus.id'), primary_key=True)
+    id2 = Column(Integer, ForeignKey('Users.id'), primary_key=True)
+    meal_time = Column(String)

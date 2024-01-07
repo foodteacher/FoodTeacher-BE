@@ -33,7 +33,7 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def remove_field(self, db: Session, *, db_obj: User, field: str) -> Optional[User]:
         if db_obj:
             if hasattr(db_obj, field):
-                setattr(db_obj, field, None)  # 필드 값을 None으로 설정
+                setattr(db_obj, field, "")
                 db.add(db_obj)
                 db.commit()
                 db.refresh(db_obj)

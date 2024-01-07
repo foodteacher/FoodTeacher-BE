@@ -8,6 +8,4 @@ from ..db.session import Base
 class UserDietPlan(Base):
     __tablename__ = 'UserDietPlans'
     id = Column(String(255), primary_key=True, nullable=False, comment='Auto Increment')
-    userId = Column(Integer, ForeignKey('Users.id'), primary_key=True, comment='Auto Increment')
     description = Column(Text)
-    user = relationship("User")

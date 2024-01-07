@@ -8,7 +8,6 @@ from app.service.foodteacher import calculate_calory, calculate_bmr
 import json
 
 router = APIRouter()
-settings = get_setting()
 
 @router.post("/diet-exercise-advice")
 def get_answer_from_gpt(query: UserQuery, current_user: User = Depends(get_current_user)):

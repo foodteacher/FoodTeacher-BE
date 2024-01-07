@@ -5,16 +5,14 @@ from app.api.api import api_router
 
 from .db.session import Base, engine
 # service
-from .service.clova_ai import get_executor
-from .service.bmr_calculator import calculate_bmr
-from .service.food_teacher import get_diet_exercise_advice
+from .service.foodteacher import calculate_calory
 
 
 
 # app 생성
 def create_tables():
     Base.metadata.create_all(bind=engine)
-    
+
 def get_application():
     app = FastAPI()
     create_tables()

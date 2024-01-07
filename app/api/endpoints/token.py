@@ -28,7 +28,7 @@ def get_jwt_access_token_by_refresh_token(refresh_token: RefreshToken, db: Sessi
 
 @router.post("/refresh/kakao/access-token")
 def get_kakao_access_token_by_refresh_token(kakao_id: KakaoId, db: Session = Depends(get_db)):
-    REST_API_KEY = settings.REST_API_KEY
+    REST_API_KEY = settings.KAKAO_REST_API_KEY
     id = kakao_id.id
     current_user = crud_user.get_by_kakao_id(db=db, kakao_id=id)
     

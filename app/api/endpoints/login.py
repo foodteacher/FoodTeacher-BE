@@ -45,7 +45,7 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     return jwt
 
 def get_kakao_token(authorization_code: KakaoCode):
-    REST_API_KEY = settings.REST_API_KEY
+    REST_API_KEY = settings.KAKAO_REST_API_KEY
     REDIRECT_URI = settings.REDIRECT_URI
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {

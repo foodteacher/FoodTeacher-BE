@@ -18,8 +18,11 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 14
 
     #kakao 설정 정보
-    REST_API_KEY: str
+    KAKAO_REST_API_KEY: str
     REDIRECT_URI: str ="http://localhost:3000/oauth"
+
+    # chatGPT
+    OPENAI_API_KEY: str
 
     class Config:
         env_file = ".env"

@@ -40,7 +40,7 @@ app.include_router(api_router)
 
 @app.get("/")
 def read_root():
-    print(calculate_calory("아침은 사과, 점심은 바나나, 저녁은 마라탕"))
+    #print(calculate_calory("아침은 사과, 점심은 바나나, 저녁은 마라탕"))
     return "hello, 팩트폭행단~!"
 
 ############################################# 서비스 관련 api ###########################################    

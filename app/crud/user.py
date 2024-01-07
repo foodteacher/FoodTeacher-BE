@@ -14,7 +14,8 @@ class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
     def create(self, db: Session, *, obj_in: UserCreate) -> User:
         db_obj = User(
             kakao_id = obj_in.kakao_id,
-            kakao_refresh_token=obj_in.kakao_refresh_token,
+            kakao_access_token = obj_in.kakao_access_token,
+            kakao_refresh_token = obj_in.kakao_refresh_token,
             jwt_refresh_token = obj_in.jwt_refresh_token
         )
         db.add(db_obj)

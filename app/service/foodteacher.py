@@ -1,8 +1,11 @@
 import os
 from openai import OpenAI
 from ..schemas.user import UserRead
+from app.core.config import get_setting
 
-# os.environ["OPENAI_API_KEY"] = "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"
+settings = get_setting()
+
+os.environ["OPENAI_API_KEY"] = settings.OPENAI_API_KEY
 def calculate_calory(user_input, bmr):
     client = OpenAI()
     response = client.chat.completions.create(

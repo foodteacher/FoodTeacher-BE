@@ -15,4 +15,5 @@ def get_answer_from_gpt(query: UserQuery, current_user: User = Depends(get_curre
     bmr = calculate_bmr(current_user)
     res = calculate_calory(query.query, bmr)
     result = json.loads(res)
+    
     return result

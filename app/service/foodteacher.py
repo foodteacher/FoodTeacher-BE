@@ -6,7 +6,7 @@ from app.core.config import get_setting
 settings = get_setting()
 
 os.environ["OPENAI_API_KEY"] = settings.OPENAI_API_KEY
-def calculate_calory(user_input, bmr):
+def calculate_calory(user_input):
     client = OpenAI()
     response = client.chat.completions.create(
         model="gpt-3.5-turbo-1106",

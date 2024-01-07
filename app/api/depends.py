@@ -7,15 +7,12 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
 from app.core.config import get_setting
-from app.db.session import SessionLocal
 from app.models.user import User
 from app.crud.user import crud_user
 from app.schemas.token import TokenPayload
 from datetime import datetime
 
 from app.db.session import get_db
-
-from app.core.session import verifier
 
 reusable_oauth2 = OAuth2PasswordBearer(tokenUrl="/login/")
 settings = get_setting()

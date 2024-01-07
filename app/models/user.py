@@ -14,5 +14,6 @@ class User(Base):
     age = Column(Integer)
     gender = Column(String(255))
     target_weight = Column(Float)
+    kakao_access_token = Column(String(255))
     kakao_refresh_token = Column(String(255))
     jwt_refresh_token = Column(String(255))

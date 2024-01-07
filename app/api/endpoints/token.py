@@ -1,18 +1,17 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.config import get_setting
 from app.core.security import create_token
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import UserUpdate
 from app.schemas.token import Token, RefreshToken
-from app.schemas.kakao import KakaoId, KakaoCode
+from app.schemas.kakao import KakaoId
 from app.crud.user import crud_user
 from app.api.depends import get_current_user
-from fastapi_sessions import session_verifier
 
 import requests
 

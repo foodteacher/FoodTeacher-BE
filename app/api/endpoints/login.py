@@ -6,13 +6,10 @@ from sqlalchemy.orm import Session
 from app.core.config import get_setting
 from app.core.security import create_token
 from app.db.session import get_db
-from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
-from app.schemas.token import Token, RefreshToken
+from app.schemas.token import Token
 from app.schemas.kakao import KakaoCode
 from app.crud.user import crud_user
-from app.api.depends import get_current_user
-from fastapi_sessions import session_verifier
 
 import requests
 
@@ -37,10 +34,10 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     user = crud_user.get_by_kakao_id(db, kakao_id=kakao_id)
     jwt = get_jwt(db=db, kakao_id=kakao_id)
     if user:
-        new_user_data = UserUpdate(kakao_refresh_token=kakao_refresh_token, jwt_refresh_token=jwt.refresh_token)
+        new_user_data = UserUpdate(kakao_access_token=kakao_access_token, kakao_refresh_token=kakao_refresh_token, jwt_refresh_token=jwt.refresh_token)
         crud_user.update(db=db, db_obj=user, obj_in=new_user_data)
         return jwt
-    obj_in = UserCreate(kakao_id=kakao_id, kakao_refresh_token=kakao_refresh_token, jwt_refresh_token=jwt.refresh_token)
+    obj_in = UserCreate(kakao_id=kakao_id, kakao_access_token=kakao_access_token, kakao_refresh_token=kakao_refresh_token, jwt_refresh_token=jwt.refresh_token)
     user = crud_user.create(db, obj_in=obj_in)
     return jwt
 

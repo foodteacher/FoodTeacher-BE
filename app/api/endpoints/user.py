@@ -1,8 +1,6 @@
 from typing import Any
 
-from fastapi import APIRouter, Depends, Body, HTTPException
-from fastapi.encoders import jsonable_encoder
-from pydantic.networks import EmailStr
+from fastapi import APIRouter, Depends
 
 from app.api.depends import get_current_user
 from app.models.user import User

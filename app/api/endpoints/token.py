@@ -9,7 +9,6 @@ from app.db.session import get_db
 from app.models.user import User
 from app.schemas.user import UserUpdate
 from app.schemas.token import Token, RefreshToken
-from app.schemas.kakao import KakaoId
 from app.crud.user import crud_user
 from app.api.depends import get_current_user
 
@@ -37,7 +36,7 @@ def get_kakao_access_token_by_refresh_token(current_user: User = Depends(get_cur
 
     if "refresh_token" in _result:
         update_data_dict["kakao_refresh_token"] = _result["refresh_token"]
-        
+
     update_data = UserUpdate(**update_data_dict)
     crud_user.update(db=db, db_obj=current_user, obj_in=update_data)
     return _result["access_token"]

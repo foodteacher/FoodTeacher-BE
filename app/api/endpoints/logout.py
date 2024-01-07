@@ -16,7 +16,9 @@ settings = get_setting()
 @router.post('/logout')
 def logout(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     kakao_logout(current_user=current_user)
-    res = crud_user.remove_field(db=db, db_obj=current_user, field="refresh_token")
+    crud_user.remove_field(db=db, db_obj=current_user, field="kakao_refresh_token")
+    crud_user.remove_field(db=db, db_obj=current_user, field="kakao_access_token")
+    res = crud_user.remove_field(db=db, db_obj=current_user, field="jwt_refresh_token")
     return res
 
 def kakao_logout(current_user: User):

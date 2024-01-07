@@ -6,6 +6,7 @@ from app.core.config import get_setting
 from app.api.depends import get_current_user
 from app.crud.user import crud_user
 from app.models.user import User
+from app.schemas.user import UserRead
 
 import requests
 
@@ -13,8 +14,8 @@ import requests
 router = APIRouter()
 settings = get_setting()
 
-@router.post('/logout')
-def logout(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+@router.post('/logout', response_model=UserRead, response_model_exclude={"kakao_access_token": True, "kakao_refresh_token": True, "jwt_refresh_token": True})
+def logout(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)) -> UserRead:
     kakao_logout(current_user=current_user)
     crud_user.remove_field(db=db, db_obj=current_user, field="kakao_refresh_token")
     crud_user.remove_field(db=db, db_obj=current_user, field="kakao_access_token")

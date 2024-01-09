@@ -2,10 +2,10 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class MenuBase(BaseModel):
-    user_diet_plan_info_id: int
+    user_diet_plan_info_id: int = None
     name: str = None
     calories: float = None
-    meal_time: str
+    meal_time: str = None
     created_at: datetime = None
 
 class MenuCreate(MenuBase):

@@ -31,6 +31,9 @@ class CRUDMenu(CRUDBase[Menu, MenuCreate, MenuUpdate]):
                 db.refresh(db_obj)
             return db_obj
         return None
+    
+    def get_by_user_diet_plan_info(self, db: Session, *, user_diet_plan_info_id) -> Optional[Menu]:
+        return db.query(Menu).filter(Menu.user_diet_plan_info_id == user_diet_plan_info_id).all()
 
 
 crud_menu = CRUDMenu(Menu)

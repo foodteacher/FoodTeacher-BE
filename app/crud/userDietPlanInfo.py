@@ -31,6 +31,9 @@ class CRUDUserDietPlanInfo(CRUDBase[UserDietPlanInfo, UserDietPlanInfoCreate, Us
                 db.refresh(db_obj)
             return db_obj
         return None
+    
+    def get_by_user_id(self, db: Session, *, user_id: int) -> Optional[UserDietPlanInfo]:
+        return db.query(UserDietPlanInfo).filter(UserDietPlanInfo.user_id == user_id).first()
 
 
 crud_user_diet_plan_info = CRUDUserDietPlanInfo(UserDietPlanInfo)

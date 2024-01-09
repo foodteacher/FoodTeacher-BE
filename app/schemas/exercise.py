@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class ExerciseBase(BaseModel):
-    user_diet_plan_info_id: int
+    user_diet_plan_info_id: int = None
     advice: str = None
     recommended_exercise: str = None
 

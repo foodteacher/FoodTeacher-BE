@@ -7,7 +7,7 @@ from .db.session import Base, engine
 # service
 from .service.foodteacher import calculate_calory
 
-
+import json
 
 # app 생성
 def create_tables():
@@ -40,6 +40,9 @@ app.include_router(api_router)
 
 @app.get("/")
 def read_root():
+    res = calculate_calory("아침은 사과를 먹었고, 점심은 바나나, 저녁은 마라탕 먹었어.", 2000)
+    _res = json.loads(res)
+    print(_res)
     return "hello, 팩트폭행단~!"
 
 ############################################# 서비스 관련 api ###########################################    

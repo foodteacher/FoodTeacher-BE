@@ -31,6 +31,10 @@ class CRUDExercise(CRUDBase[Exercise, ExerciseCreate, ExerciseUpdate]):
                 db.refresh(db_obj)
             return db_obj
         return None
+    
+    def get_by_user_diet_plan_info(self, db: Session, *, user_diet_plan_info_id) -> Optional[Exercise]:
+        return db.query(Exercise).filter(Exercise.user_diet_plan_info_id == user_diet_plan_info_id).first()
+
 
 
 crud_exercise = CRUDExercise(Exercise)

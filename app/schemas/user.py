@@ -42,3 +42,17 @@ class UserInDBBase(UserBase):
 
 class UserRead(UserInDBBase):
     pass
+
+class UserInfo(BaseModel):
+    name: str
+    gender: str
+    age: int
+    height: float
+    weight: float
+    target_weight: float
+    breakfast: dict[str, int]
+    lunch: dict[str, int]
+    dinner: dict[str, int]
+    advice: str
+    recommended_exercise: str
+    

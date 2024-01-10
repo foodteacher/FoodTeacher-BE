@@ -95,7 +95,7 @@ def create_user(*, db: Session, new_user: UserCreate):
     new_exercise = ExerciseCreate(user_diet_plan_info_id=user_diet_plan_info.id)
     crud_exercise.create(db=db, obj_in=new_exercise)
 
-    meal_times = ["아침", "점심", "저녁"]
+    meal_times = ["breakfast", "lunch", "dinner"]
     create_menu(db=db, meal_times=meal_times, user_diet_plan_info_id=user_diet_plan_info.id)
     return user
 

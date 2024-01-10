@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 from fastapi import APIRouter, Depends
 
 from sqlalchemy.orm import Session
@@ -15,7 +15,7 @@ from app.crud.user import crud_user
 router = APIRouter()
 
 @router.get("/me", response_model=UserRead, response_model_exclude={"kakao_access_token": True, "kakao_refresh_token": True, "jwt_refresh_token": True})
-def read_user_me(current_user: User = Depends(get_current_user)) -> UserRead:
+def read_user_me(current_user: User = Depends(get_current_user)) -> Optional[UserRead]:
     return current_user
 
 @router.patch('/register', response_model=UserRead, response_model_exclude={"kakao_access_token": True, "kakao_refresh_token": True, "jwt_refresh_token": True})

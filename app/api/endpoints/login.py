@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
 
 from app.core.config import get_setting
-from app.core.security import create_token
+from app.core.security import get_jwt
 from app.db.session import get_db
 from app.schemas.user import UserCreate, UserUpdate
 from app.schemas.token import Token
@@ -76,15 +76,6 @@ def get_kakao_id(kakao_access_token):
         return user_id
     else:
         raise HTTPException(status_code=401, detail="Kakao access token authentication failed")
-    
-def get_jwt(*, kakao_id: int, db: Session = Depends(get_db)) -> Token:
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_token(subject=kakao_id, expires_delta=access_token_expires)
-    
-    refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
-    refresh_token = create_token(subject=kakao_id, expires_delta=refresh_token_expires)
-    res = Token(access_token=access_token, refresh_token=refresh_token, token_type="Bearer")
-    return res
 
 def create_user(*, db: Session, new_user: UserCreate):
     user = crud_user.create(db, obj_in=new_user)

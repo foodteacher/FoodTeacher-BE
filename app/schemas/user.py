@@ -25,16 +25,16 @@ class UserInput(BaseModel):
     query: str
 
 class UserInDBBase(UserBase):
-    kakao_id: int
-    name: str
-    height: float
-    weight: float
-    age: int
-    gender: str
-    target_weight: float
-    kakao_access_token: str
-    kakao_refresh_token: str
-    jwt_refresh_token: str
+    kakao_id: Optional[int] = None
+    name: Optional[str] = None
+    height: Optional[float] = None
+    weight: Optional[float] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    target_weight: Optional[float] = None
+    kakao_access_token: Optional[str] = None
+    kakao_refresh_token: Optional[str] = None
+    jwt_refresh_token: Optional[str] = None
 
     class Config:
         from_attributes = True

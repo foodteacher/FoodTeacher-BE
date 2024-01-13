@@ -38,8 +38,9 @@ def update_user_diet_plan_info(db: Session, result: dict, user_id: int):
     menus = crud_menu.get_by_user_diet_plan_info(db=db, user_diet_plan_info_id=user_diet_plan_info.id)
     for menu in menus:
         try:
-            meal_time_data = result.get(f"{menu.meal_time}", {})
-            obj_in = MenuUpdate(name=meal_time_data.get("menu"), calories=meal_time_data.get("calories"))
+            meal_time_ = menu.meal_time
+            meal_time_data = result.get(meal_time_)
+            obj_in = MenuUpdate(name=meal_time_data.get("menu", ""), calories=meal_time_data.get("calories", 0))
             crud_menu.update(db=db, db_obj=menu, obj_in=obj_in)
         except (KeyError, TypeError) as e:
             print(f"Error updating menu: {e}")

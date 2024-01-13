@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Any
 
 class UserBase(BaseModel):
     id: Optional[int] = None
@@ -44,15 +44,15 @@ class UserRead(UserInDBBase):
     pass
 
 class UserInfo(BaseModel):
-    name: str
-    gender: str
-    age: int
-    height: float
-    weight: float
-    target_weight: float
-    breakfast: dict[str, int]
-    lunch: dict[str, int]
-    dinner: dict[str, int]
-    advice: str
-    recommended_exercise: str
+    name: Optional[str] = None
+    gender: Optional[str] = None
+    age: Optional[int] = None
+    height: Optional[float] = None
+    weight: Optional[float] = None
+    target_weight: Optional[float] = None
+    breakfast: Optional[dict[str, Any]] = None
+    lunch: Optional[dict[str, Any]] = None
+    dinner: Optional[dict[str, Any]] = None
+    advice: Optional[str] = None
+    recommended_exercise: Optional[str] = None
     

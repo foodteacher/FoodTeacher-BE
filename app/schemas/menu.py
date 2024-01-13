@@ -1,12 +1,13 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 class MenuBase(BaseModel):
-    user_diet_plan_info_id: int = None
-    name: str = None
-    calories: float = None
-    meal_time: str = None
-    created_at: datetime = None
+    user_diet_plan_info_id: Optional[int] = None
+    name: Optional[str] = None
+    calories: Optional[float] = None
+    meal_time: Optional[str] = None
+    created_at: Optional[datetime] = None
 
 class MenuCreate(MenuBase):
     pass

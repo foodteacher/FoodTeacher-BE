@@ -22,7 +22,8 @@ app = get_application()
 
 origins = [
     "http://localhost:3000",
-    "https://www.foodteacher.xyz"
+    "https://foodteacher.xyz",
+    "https://www.foodteacher.xyz",
 ]
 app.add_middleware(
     CORSMiddleware,

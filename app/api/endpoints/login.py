@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Body
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from app.core.config import get_setting
@@ -25,8 +25,8 @@ settings = get_setting()
 
 # 엑세스 토큰을 저장할 변수
 @router.post('/login')
-async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)) -> Token:
-    kakao_token = get_kakao_token(authorization_code=authorization_code)
+async def kakaoAuth(authorization_code: KakaoCode, request: Request, db: Session = Depends(get_db)) -> Token:
+    kakao_token = get_kakao_token(authorization_code=authorization_code, request=request)
     kakao_access_token = kakao_token.get("access_token")
     kakao_refresh_token = kakao_token.get("refresh_token")
 
@@ -42,9 +42,13 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
     create_user(db=db, new_user=new_user)
     return jwt
 
-def get_kakao_token(authorization_code: KakaoCode):
+def get_kakao_token(authorization_code: KakaoCode, request: Request):
     REST_API_KEY = settings.KAKAO_REST_API_KEY
-    REDIRECT_URI = settings.redirect_uri
+    client_host = request.client.host
+    if client_host == "127.0.0.1" or client_host == "localhost":
+        REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
+    else:
+        REDIRECT_URI = settings.REDIRECT_URI_PRODUCTION
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"

@@ -2,8 +2,6 @@ from pydantic_settings import BaseSettings
 from functools import lru_cache
 
 class Settings(BaseSettings):
-    ENVIRONMENT: str
-
     # MySQL 설정 정보
     MYSQL_HOST: str
     MYSQL_PORT: int
@@ -21,12 +19,8 @@ class Settings(BaseSettings):
 
     #kakao 설정 정보
     KAKAO_REST_API_KEY: str
-    @property
-    def redirect_uri(self):
-        if self.ENVIRONMENT == "production":
-            return "https://foodteacher.xyz/oauth"
-        else:
-            return "http://localhost:3000/oauth"
+    REDIRECT_URI_DEVELOPMENT: str ="http://localhost:3000/oauth"
+    REDIRECT_URI_PRODUCTION: str = "https://foodteacher.xyz/oauth"
 
     # chatGPT
     OPENAI_API_KEY: str

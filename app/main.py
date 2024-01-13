@@ -43,31 +43,3 @@ def read_root():
     _res = json.loads(res)
     print(_res)
     return "hello, 팩트폭행단~!"
-
-############################################# 서비스 관련 api ###########################################    
-# @app.post("/users/{user_id}/diet-exercise-advice")
-# async def get_answer_from_clova(user_id: int, user_input: user.UserInput, db: Session = Depends(get_db)):
-#     executor = get_executor()
-#     user = await base.get_user_by_user_id(db, user_id)
-#     bmr = calculate_bmr(user)
-
-#     result = get_diet_exercise_advice(executor, bmr, user_input.query)
-#     print(result)
-#     data = json.loads(result)
-
-#     if "error" in data:
-#         raise HTTPException(status_code=404, detail="error has been occured")
-#     return data
-
-# @app.post("/users/diet-exercise-advice")
-# async def get_answer_from_clova(user_input: user.TempUserInput, db: Session = Depends(get_db)):
-#     executor = get_executor()
-#     bmr = calculate_bmr(user_input)
-
-#     result = get_diet_exercise_advice(executor, bmr, user_input.query)
-#     print(result)
-#     data = json.loads(result)
-
-#     if "error" in data:
-#         raise HTTPException(status_code=404, detail="error has been occured")
-#     return data

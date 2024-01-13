@@ -49,7 +49,7 @@ def get_kakao_token(authorization_code: KakaoCode, request: Request):
     #     REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
     # else:
     #     REDIRECT_URI = settings.REDIRECT_URI_PRODUCTION
-    REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
+    REDIRECT_URI = settings.REDIRECT_URI_PRODUCTION
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"

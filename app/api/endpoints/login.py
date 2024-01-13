@@ -44,7 +44,7 @@ async def kakaoAuth(authorization_code: KakaoCode, db: Session = Depends(get_db)
 
 def get_kakao_token(authorization_code: KakaoCode):
     REST_API_KEY = settings.KAKAO_REST_API_KEY
-    REDIRECT_URI = settings.REDIRECT_URI
+    REDIRECT_URI = settings.redirect_uri
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"

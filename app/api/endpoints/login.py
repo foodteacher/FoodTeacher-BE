@@ -54,11 +54,11 @@ def get_kakao_token(authorization_code: KakaoCode, request: Request):
     # scheme = request.headers.get('X-Forwarded-Proto', 'http')
     scheme_header = request.headers
     print(scheme_header)
-    scheme = scheme_header.get('X-Forwarded-Proto', 'http')
-    if scheme == "http":
-        REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
-    else:  # scheme == "https"
+    scheme = scheme_header.get('x-forwarded-for', '34.125.247.54')
+    if scheme == '34.125.247.54':
         REDIRECT_URI = settings.REDIRECT_URI_PRODUCTION
+    else:
+        REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
     
     # REDIRECT_URI = settings.REDIRECT_URI_PRODUCTION
     _url = f'https://kauth.kakao.com/oauth/token'

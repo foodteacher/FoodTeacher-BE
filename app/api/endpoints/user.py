@@ -37,6 +37,7 @@ def get_info(*, db: Session = Depends(get_db), current_user: User = Depends(get_
         "target_weight": current_user.target_weight,
         "advice": exercise.advice,
         "recommended_exercise": exercise.recommended_exercise,
+        "excess_calories": exercise.excess_calories,
     }
     for menu in menus:
         user_info_dic[menu.meal_time] = {"menu": menu.name, "calories": menu.calories}

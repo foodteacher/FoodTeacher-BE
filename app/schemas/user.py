@@ -55,4 +55,5 @@ class UserInfo(BaseModel):
     dinner: Optional[dict[str, Any]] = None
     advice: Optional[str] = None
     recommended_exercise: Optional[str] = None
+    excess_calories: Optional[float] = None
     

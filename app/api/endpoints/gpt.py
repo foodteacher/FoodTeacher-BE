@@ -23,7 +23,6 @@ router = APIRouter()
 def get_answer_from_gpt(query: UserQuery, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     bmr = calculate_bmr(current_user)
     res = calculate_calory(query.query, bmr)
-    print(res)
     try:
         result = json.loads(res)
     except JSONDecodeError as e:
@@ -47,7 +46,6 @@ def update_user_diet_plan_info(db: Session, result: dict, user_id: int):
     
     exercise = crud_exercise.get_by_user_diet_plan_info(db=db, user_diet_plan_info_id=user_diet_plan_info.id)
     try:
-        print(result)
         advice = result.get("잔소리", "")
         recommended_exercise = result.get("운동필요시간", "")
         excess_calories = result.get("초과칼로리", 0)

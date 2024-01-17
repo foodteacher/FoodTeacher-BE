@@ -47,9 +47,11 @@ def update_user_diet_plan_info(db: Session, result: dict, user_id: int):
     
     exercise = crud_exercise.get_by_user_diet_plan_info(db=db, user_diet_plan_info_id=user_diet_plan_info.id)
     try:
+        print(result)
         advice = result.get("잔소리", "")
         recommended_exercise = result.get("운동필요시간", "")
-        obj_in = ExerciseUpdate(advice=advice, recommended_exercise=recommended_exercise)
+        excess_calories = result.get("초과칼로리", 0)
+        obj_in = ExerciseUpdate(advice=advice, recommended_exercise=recommended_exercise, excess_calories=excess_calories)
         crud_exercise.update(db=db, db_obj=exercise, obj_in=obj_in)
     except (KeyError, TypeError) as e:
         print(f"Error updating exercise: {e}")

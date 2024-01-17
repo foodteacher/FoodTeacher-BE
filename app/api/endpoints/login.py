@@ -44,23 +44,13 @@ async def kakaoAuth(authorization_code: KakaoCode, request: Request, db: Session
 
 def get_kakao_token(authorization_code: KakaoCode, request: Request):
     REST_API_KEY = settings.KAKAO_REST_API_KEY
-    # client_host = request.client.host
-    # print(client_host)
-    # if client_host == "127.0.0.1" or client_host == "localhost":
-    #     REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
-    # else:
+    # scheme = request.headers.get('x-forwarded-for', '34.125.247.54')
+    # if scheme == '34.125.247.54':
     #     REDIRECT_URI = settings.REDIRECT_URI_PRODUCTION
-
-    # scheme = request.headers.get('X-Forwarded-Proto', 'http')
-    scheme_header = request.headers
-    print(scheme_header)
-    scheme = scheme_header.get('x-forwarded-for', '34.125.247.54')
-    if scheme == '34.125.247.54':
-        REDIRECT_URI = settings.REDIRECT_URI_PRODUCTION
-    else:
-        REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
+    # else:
+    #     REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
     
-    # REDIRECT_URI = settings.REDIRECT_URI_PRODUCTION
+    REDIRECT_URI = settings.REDIRECT_URI_DEVELOPMENT
     _url = f'https://kauth.kakao.com/oauth/token'
     headers = {
         "Content-Type": "application/x-www-form-urlencoded"

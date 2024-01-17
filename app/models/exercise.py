@@ -9,3 +9,4 @@ class Exercise(Base):
     user_diet_plan_info_id = Column(Integer, ForeignKey('UserDietPlanInfo.id'), primary_key=True, comment='Auto Increment')
     advice = Column(Text)
     recommended_exercise = Column(Text)
+    excess_calories = Column(Float)

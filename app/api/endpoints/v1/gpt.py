@@ -9,6 +9,7 @@ from app.schemas.gpt import UserQuery
 from app.api.depends import get_current_user
 from app.schemas.exercise import ExerciseUpdate
 from app.schemas.menu import MenuUpdate
+from app.schemas.guest import GuestBase
 from app.crud.user import crud_user
 from app.crud.userDietPlanInfo import crud_user_diet_plan_info
 from app.crud.exercise import crud_exercise
@@ -29,6 +30,18 @@ def get_answer_from_gpt(query: UserQuery, db: Session = Depends(get_db), current
         print(f"Error json.loads: {e}")
     
     update_user_diet_plan_info(db, result, current_user.id)
+    return result
+
+@router.post("/guest/diet-exercise-advice")
+def get_answer_from_gpt(current_user: GuestBase, db: Session = Depends(get_db)):
+    bmr = calculate_bmr(current_user)
+    res = calculate_calory(current_user.query, bmr)
+    try:
+        result = json.loads(res)
+    except JSONDecodeError as e:
+        print(f"Error json.loads: {e}")
+    
+    
     return result
 
 def update_user_diet_plan_info(db: Session, result: dict, user_id: int):

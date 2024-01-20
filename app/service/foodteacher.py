@@ -1,7 +1,9 @@
 import os
 from openai import OpenAI
 from ..schemas.user import UserRead
+from app.schemas.guest import GuestBase
 from app.core.config import get_setting
+from typing import Union
 
 settings = get_setting()
 
@@ -22,7 +24,7 @@ def calculate_calory(user_input, bmr):
 
 
 # 기초대사량 계산
-def calculate_bmr(user_data: UserRead):
+def calculate_bmr(user_data: Union[UserRead, GuestBase]):
     # Mifflin-St Jeor 공식을 사용
     gender = user_data.gender; weight = user_data.weight; height = user_data.height; age = user_data.age
     if gender == '남성':

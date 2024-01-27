@@ -1,4 +1,4 @@
-"""add excess calories field
+"""add_excess_calories_field
 
 Revision ID: 0201baffc179
 Revises: fb93d37d6676

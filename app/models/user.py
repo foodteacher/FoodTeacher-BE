@@ -17,3 +17,4 @@ class User(Base):
     kakao_access_token = Column(String(255))
     kakao_refresh_token = Column(String(255))
     jwt_refresh_token = Column(String(255))
+    user_diet_plan_infos = relationship("UserDietPlanInfoV2")

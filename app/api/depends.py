@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_setting
 from app.models.user import User
-from app.crud.user import crud_user
+from app.crud.v1.user import crud_user
 from app.schemas.token import TokenPayload
 from datetime import datetime
 

@@ -7,10 +7,10 @@ from app.api.depends import get_current_user
 from app.core.security import get_jwt
 from app.models.user import User
 from app.schemas.user import UserRead, UserUpdate, UserInfo
-from app.crud.menu import crud_menu
-from app.crud.userDietPlanInfo import crud_user_diet_plan_info
-from app.crud.exercise import crud_exercise
-from app.crud.user import crud_user
+from app.crud.v1.menu import crud_menu
+from app.crud.v1.userDietPlanInfo import crud_user_diet_plan_info
+from app.crud.v1.exercise import crud_exercise
+from app.crud.v1.user import crud_user
 
 router = APIRouter()
 

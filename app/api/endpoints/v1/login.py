@@ -13,10 +13,10 @@ from app.schemas.kakao import KakaoCode
 from app.schemas.userDietPlanInfo import UserDietPlanInfoCreate
 from app.schemas.exercise import ExerciseCreate
 from app.schemas.menu import MenuCreate
-from app.crud.user import crud_user
-from app.crud.userDietPlanInfo import crud_user_diet_plan_info
-from app.crud.exercise import crud_exercise
-from app.crud.menu import crud_menu
+from app.crud.v1.user import crud_user
+from app.crud.v1.userDietPlanInfo import crud_user_diet_plan_info
+from app.crud.v1.exercise import crud_exercise
+from app.crud.v1.menu import crud_menu
 
 import requests
 

@@ -8,7 +8,7 @@ from app.db.session import Base
 # User 모델 정의
 class User(Base):
     __tablename__ = 'user'
-    id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, nullable=False, autoincrement=True)
     kakao_id: Mapped[str] = mapped_column(String(255))
     name: Mapped[str] = mapped_column(String(255), nullable=True)
     height: Mapped[float] = mapped_column(nullable=True)

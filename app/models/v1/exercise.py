@@ -1,12 +1,12 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy import Column, Integer, String, Float, Text
-from sqlalchemy.orm import relationship, Mapped
+from sqlalchemy import Column, Integer, Float, Text
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.session import Base
 from typing import Optional
 
 class Exercise(Base):
     __tablename__ = 'exercise'
-    id = Column(Integer, primary_key=True, autoincrement=True, comment='Auto Increment')
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, comment='Auto Increment')
     user_diet_plan_info_id = Column(Integer, ForeignKey('user_diet_plan_info.id'), comment='Auto Increment')
     advice = Column(Text)
     recommended_exercise = Column(Text)

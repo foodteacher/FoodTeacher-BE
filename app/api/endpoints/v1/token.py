@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_setting
 from app.core.security import create_token
 from app.db.session import get_db
-from app.models.user import User
+from app.models.v1.user import User
 from app.schemas.user import UserUpdate
 from app.schemas.token import Token, RefreshToken
 from app.crud.v1.user import crud_user

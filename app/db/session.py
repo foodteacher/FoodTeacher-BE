@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from ..core.config import get_setting
 from sqlalchemy import text
+from sqlalchemy.orm import DeclarativeBase
 
 from typing import Generator
 
@@ -17,12 +18,16 @@ SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{}:{}@{}:{}/{}".format(
 )
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, pool_pre_ping=True
+    SQLALCHEMY_DATABASE_URL, 
+    pool_pre_ping=True,
+    echo=True
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+# Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 def get_db() -> Generator:
     try:

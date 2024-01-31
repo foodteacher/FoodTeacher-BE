@@ -9,6 +9,8 @@ class MenuBase(BaseModel):
     meal_time: Optional[str] = None
     created_at: Optional[datetime] = None
 
+    10_10_10-32-12
+
 class MenuCreate(MenuBase):
     pass
 

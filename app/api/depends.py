@@ -7,7 +7,7 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 
 from app.core.config import get_setting
-from app.models.v1.user import User
+from app.models.user_info import User
 from app.crud.v1.user import crud_user
 from app.schemas.token import TokenPayload
 from datetime import datetime

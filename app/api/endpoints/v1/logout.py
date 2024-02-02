@@ -5,7 +5,7 @@ from app.db.session import get_db
 from app.core.config import get_setting
 from app.api.depends import get_current_user
 from app.crud.v1.user import crud_user
-from app.models.v1.user import User
+from app.models.user_info import User
 from app.schemas.user import UserRead
 
 import requests

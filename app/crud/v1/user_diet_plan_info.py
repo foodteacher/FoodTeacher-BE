@@ -3,8 +3,8 @@ from typing import Any, Dict, Optional, Union
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models.v1.userDietPlanInfo import UserDietPlanInfo
-from app.schemas.userDietPlanInfo import UserDietPlanInfoCreate, UserDietPlanInfoUpdate
+from app.models.user_info import UserDietPlanInfo
+from app.schemas.user_diet_plan_info import UserDietPlanInfoCreate, UserDietPlanInfoUpdate
 
 
 class CRUDUserDietPlanInfo(CRUDBase[UserDietPlanInfo, UserDietPlanInfoCreate, UserDietPlanInfoUpdate]):

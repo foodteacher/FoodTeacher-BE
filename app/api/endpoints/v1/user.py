@@ -5,10 +5,10 @@ from sqlalchemy.orm import Session
 from app.api.depends import get_db
 from app.api.depends import get_current_user
 from app.core.security import get_jwt
-from app.models.v1.user import User
+from app.models.user_info import User
 from app.schemas.user import UserRead, UserUpdate, UserInfo
 from app.crud.v1.menu import crud_menu
-from app.crud.v1.userDietPlanInfo import crud_user_diet_plan_info
+from app.crud.v1.user_diet_plan_info import crud_user_diet_plan_info
 from app.crud.v1.exercise import crud_exercise
 from app.crud.v1.user import crud_user
 

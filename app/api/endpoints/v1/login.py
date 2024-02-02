@@ -10,11 +10,11 @@ from app.db.session import get_db
 from app.schemas.user import UserCreate, UserUpdate
 from app.schemas.token import Token
 from app.schemas.kakao import KakaoCode
-from app.schemas.userDietPlanInfo import UserDietPlanInfoCreate
+from app.schemas.user_diet_plan_info import UserDietPlanInfoCreate
 from app.schemas.exercise import ExerciseCreate
 from app.schemas.menu import MenuCreate
 from app.crud.v1.user import crud_user
-from app.crud.v1.userDietPlanInfo import crud_user_diet_plan_info
+from app.crud.v1.user_diet_plan_info import crud_user_diet_plan_info
 from app.crud.v1.exercise import crud_exercise
 from app.crud.v1.menu import crud_menu
 

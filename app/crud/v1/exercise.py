@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional, Union
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models.v1.exercise import Exercise
+from app.models.user_info import Exercise
 from app.schemas.exercise import ExerciseCreate, ExerciseUpdate
 
 

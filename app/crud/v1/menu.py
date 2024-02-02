@@ -3,7 +3,7 @@ from typing import Any, Dict, Optional, Union
 from sqlalchemy.orm import Session
 
 from app.crud.base import CRUDBase
-from app.models.v1.menu import Menu
+from app.models.user_info import Menu
 from app.schemas.menu import MenuCreate, MenuUpdate
 
 

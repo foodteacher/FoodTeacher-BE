@@ -24,6 +24,7 @@ if config.config_file_name is not None:
 from app.db.session import Base
 
 from app.models.user_info import User, UserDietPlanInfo, Menu, Exercise
+from app.models.user_info_v2 import UserV2,UserDietPlanInfoV2, MenuV2, ExerciseV2
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

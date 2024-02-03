@@ -37,7 +37,9 @@ app.include_router(api_router)
 
 @app.get("/")
 def read_root():
-    # res = calculate_calory("아침은 사과를 먹었고, 점심은 바나나, 저녁은 마라탕 먹었어.", 2000)
+    # res = calculate_calory("아침은 피자 점심은 피자 저녁은 피자를 먹었어", 2000)
+    # print(res)
     # _res = json.loads(res)
     # print(_res)
+    # print(type(_res))
     return "hello, 팩트폭행단~!"

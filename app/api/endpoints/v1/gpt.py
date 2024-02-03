@@ -26,6 +26,7 @@ def get_answer_from_gpt(query: UserQuery, db: Session = Depends(get_db), current
     res = calculate_calory(query.query, bmr)
     try:
         result = json.loads(res)
+        print(type(result))
     except JSONDecodeError as e:
         print(f"Error json.loads: {e}")
     

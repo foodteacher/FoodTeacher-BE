@@ -1,4 +1,4 @@
-name: Build and Push v2
+name: Build and Push BE v2
 
 on:
   push:
@@ -60,7 +60,7 @@ jobs:
         git clone https://${{ secrets.GIT_TOKEN }}@github.com/foodteacher/foodteacher-helm.git
         cd foodteacher-helm/apps/foodteacher-be
         sed -i '/v2_image:/,/tag:/ s/tag: ".*"/tag: "${{ steps.image.outputs.version }}"/' values.yaml
-        git commit -am "Update Docker Image Name"
+        git commit -am "Update BE-v2 Docker Image Name"
         git push
 
     - name: Discord notification

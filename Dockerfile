@@ -1,5 +1,5 @@
 FROM python:3.12
-ENV MYSQL_HOST=10.106.159.154
+ENV MYSQL_HOST=mysql-service.default.svc.cluster.local
 ENV MYSQL_PORT=3306
 ENV MYSQL_ROOT_PASSWORD=foodteacher123
 ENV MYSQL_DATABASE=foodteacher
@@ -22,5 +22,7 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 # 
 COPY ./app /code/app
 
+COPY ./server.py /code/server.py
+
 # 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-headers"]
+CMD python /code/server.py

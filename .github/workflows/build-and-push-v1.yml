@@ -35,6 +35,7 @@ jobs:
         echo VERSION=$VERSION
         echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+
     - name: build and push
       if: success()
       uses: docker/build-push-action@v3
@@ -42,7 +43,8 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/foodteacher-be:${{ github.sha }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/foodteacher-be:${{ steps.image.outputs.version }}
+          
         
     - name: Discord notification on build failure
       if: failure()

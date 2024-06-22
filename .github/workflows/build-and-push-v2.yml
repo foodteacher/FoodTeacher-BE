@@ -42,7 +42,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/foodteacher-be-2:${{ github.sha }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/foodteacher-be:${{ github.sha }}
         
     - name: Discord notification on build failure
       if: failure()
@@ -50,7 +50,7 @@ jobs:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
       uses: Ilshidur/action-discord@master
       with:
-        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }}-2 build failed.'
+        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} build failed.'
 
     - name: Update docker image name
       run: |
@@ -59,8 +59,8 @@ jobs:
         git config --global user.name "gracehpark0120"
         git clone https://${{ secrets.GIT_TOKEN }}@github.com/foodteacher/foodteacher-helm.git
         cd foodteacher-helm/apps/foodteacher-be
-        sed -i '/v2_image:/,/tag:/ s/tag: ".*"/tag: "${{ steps.image.outputs.version }}"/' values.yaml
-        git commit -am "Update BE-v2 Docker Image Name"
+        sed -i '/v1_image:/,/tag:/ s/tag: ".*"/tag: "${{ steps.image.outputs.version }}"/' values.yaml
+        git commit -am "Update BE-v1 Docker Image Name"
         git push
 
     - name: Discord notification

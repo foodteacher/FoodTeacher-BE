@@ -1,4 +1,4 @@
-name: Build and Push BE v2
+name: Build and Push BE v1
 
 on:
   push:
